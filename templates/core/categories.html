@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load  static %}
+{% load type_filter_tags %}
+{% load custom_dict_tags %}
+{% load get_url_tags %}
+
+    {% block head_title %}{% if seo.title %}{{seo.title}}{% else %}{{filters.parent_category.page_title}}{% endif %}{% endblock head_title %}
+    {% block meta_description %}{% if seo.description %}{{seo.description}}{% else %}{{filters.parent_category.meta_description}}{% endif %}{% endblock meta_description %}
+ 
+    {% block content %}
+    
+
+        <main id="content" role="main">
+            <!-- breadcrumb -->
+            <div class="bg-gray-13 bg-md-transparent">
+                <div class="container">
+                    <!-- breadcrumb -->
+                    <div class="my-md-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-3 flex-nowrap flex-xl-wrap overflow-auto overflow-xl-visble">
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1"><a href="{% url 'core:home' %}">Главная</a></li>
+                                {% for category in filters.parent_category.get_ancestors %}
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1"><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+                                {% endfor %}
+                            </ol>
+                        </nav>
+                    </div>
+                    <!-- End breadcrumb -->
+                </div>
+            </div>
+            <!-- End breadcrumb -->
+
+            <div class="container">
+                <div class="row mb-8">
+                    <div id="filterProperties" class="d-xl-block col-xl-3 col-wd-2gdot5">
+                        <div class="mb-6">
+                            <div class="border-bottom border-color-1 mb-5">
+                                <h3 class="section-title section-title__sm mb-0 pb-2 font-size-18">Фильтры</h3>
+                            </div>
+                            <form method="GET">
+                                <div class="border-bottom pb-4 mb-4">
+                                    <h4 class="font-size-14 mb-3 font-weight-bold">Бренды</h4>
+
+                                    <!-- Checkboxes -->
+                                    {% for brand in filters.brands %}
+                                        <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input filter-input" id="brand-{{ brand.name }}" name="brand" value="{{ brand.id }}" {% if brand.checked %}checked{% endif %}>
+                                                <label class="custom-control-label" for="brand-{{ brand.name }}">{{ brand.name }} <span class="text-gray-25 font-size-12 font-weight-normal"></span></label>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+
+                                </div>
+
+                                {% for slug, property in filters.properties.items %}
+                                {% if property.range_slider %}
+                                    <div class="border-bottom pb-4 mb-4 range-slider">
+                                        <h4 class="font-size-14 mb-3 font-weight-bold">{{ property.name }}</h4>
+                                        <!-- Range Slider -->
+                                        <input class="js-range-slider filter-range-input irs-hidden" type="nubmer" value="2-12" name='range-{{slug}}'
+                                        data-extra-classes="u-range-slider u-range-slider-indicator u-range-slider-grid range-filter"
+                                        data-type="double"
+                                        data-grid="false"
+                                        data-hide-from-to="true"
+                                        data-prefix=""
+                                        data-min="{{ property.min_value }}"
+                                        data-max="{{ property.max_value }}"
+                                        data-from="{{ property.data_from }}"
+                                        data-to="{{ property.data_to }}"
+                                        data-result-min="#{{ slug }}rangeSliderMinResult"
+                                        data-result-max="#{{ slug }}rangeSliderMaxResult"
+                                        data-url="{{ page_url }}"
+                                        data-input-values-separator=":"
+                                        flag="{% if property.flag %}true{% else %}false{% endif %}">
+                                        <!-- End Range Slider -->
+                                        <div class="mt-1 text-gray-111 d-flex mb-4">
+                                            <span class="mr-0dot5">{{ property.name }} </span>
+                                            <span id="{{ slug }}rangeSliderMinResult" class=""></span>
+                                            <span class="mx-0dot5"> — </span>
+                                            <span id="{{ slug }}rangeSliderMaxResult" class=""></span>
+                                        </div>
+                                    </div>
+                                {% else %}
+
+                                    <div class="border-bottom pb-4 mb-4">
+                                            <a class="link link-collapse small font-size-13 text-gray-27 d-inline-flex mt-2 min-width-100" data-property="{{ slug }}" data-toggle="collapse" href="#collapse{{ slug }}" role="button" aria-expanded="{% if property.expanded %}true{% else %}false{% endif %}" aria-controls="">
+                                                <div class="collapse-wrapper d-flex justify-content-between min-width-100">
+                                                    <h4 class="font-size-14 mb-3 font-weight-bold">{{ property.name }}</h4>
+                                                    <i class="fas fa-arrow-down font-size-18"></i>
+                                                </div>
+                                            </a>
+                                        <!-- Checkboxes -->
+                                        {% for key, property_value in property.property_values %}
+                                            <div class="collapse  {% if property.expanded %}show{% endif %}" id="collapse{{ slug }}">
+                                                    <div class="form-group d-flex align-items-center justify-content-between mb-2 pb-1">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input filter-input" value="{{property_value.id}}" name="{{slug}}" id="category-{{ property_value.slug }}" {% if property_value.checked %}checked{% endif %}>
+                                                            <label class="custom-control-label" for="category-{{ property_value.slug }}">{{ property_value.value}} <span class="text-gray-25 font-size-12 font-weight-normal"></span></label>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                {% endif %}
+                                {% endfor %}
+                                <div class="range-slider">
+                                    <h4 class="font-size-14 mb-3 font-weight-bold">Цена</h4>
+                                    <!-- Range Slider -->
+                                    <input id="filter-price" class="js-range-slider filter-range-input" value="0" type="nubmer" name='price'
+                                    data-extra-classes="u-range-slider u-range-slider-indicator u-range-slider-grid"
+                                    data-type="double"
+                                    data-grid="false"
+                                    data-hide-from-to="true"
+                                    data-prefix="$"
+                                    data-min="{{ filters.output_price.min_price }}"
+                                    data-max="{{ filters.output_price.max_price }}"
+                                    data-from="{{ filters.output_price.data_from }}"
+                                    data-to="{{ filters.output_price.data_to }}"
+                                    data-result-min="#rangeSliderExample3MinResult"
+                                    data-result-max="#rangeSliderExample3MaxResult"
+                                    data-input-values-separator=":"
+                                    data-url="{{ page_url }}"
+                                    data-method="GET"
+                                    flag="">
+                                    <!-- End Range Slider -->
+                                    <div class="mt-1 text-gray-111 d-flex mb-4">
+                                        <span class="mr-0dot5">Цена: </span>
+                                        <span class="filter-cost" id="rangeSliderExample3MinResult" class=""></span>
+                                        <span>&nbspЛей</span>
+                                        <span class="mx-0dot5"> — </span>
+                                        <span class="filter-cost" id="rangeSliderExample3MaxResult" class=""></span>
+                                        <span>&nbspЛей</span>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                        </div>
+                    </div>
+                    <div class="col-xl-9 col-wd-9gdot5">
+                        {% include 'common/category_products_table.html' %}
+                    </div>
+                </div>
+            </div>
+        </main>
+
+            
+
+    {% endblock content %}
+
+        {% block additional_scripts %}
+            <script src="{% static '/js/additional_scripts/custom-filter.js' %}"></script>
+            {% include 'common/categories_scripts.html' %}
+        {% endblock additional_scripts %}

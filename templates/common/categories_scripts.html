@@ -1,0 +1,29 @@
+ <script id="categoryScripts">
+    var pageURL = '{{ page_url }}'
+    if(typeof filter === 'undefined'){
+        filter = null;
+    }
+    $(document).on('click', '.filter-input', function (e) {
+        filter = new Filter(this, pageURL);
+        filter.requestToTheServer();
+    })
+
+    $(document).on('click', '.page-link', function (e) {
+        filter = new PageFilter(this, pageURL);
+        filter.requestToTheServer();
+    })
+    
+    window.addEventListener('popstate', function(e){
+      if(e.state){
+        console.log(e.state)
+        if(e.state.href === document.URL){
+          filter.goPreviousFilter(pageURL)
+
+        } else {
+            filter.goPreviousFilter(e.state.href)
+        }
+      } else {
+          filter.goPreviousFilter(pageURL)
+      }
+    }); 
+</script>

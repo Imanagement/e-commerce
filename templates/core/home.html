@@ -1,0 +1,275 @@
+{% extends 'base.html' %}
+{% load cache %}
+{% load static %}
+{% load custom_dict_tags %}
+
+    {% block head_title %}{% if seo %}{{seo.page_title}}{% endif %}{% endblock head_title %}
+    {% block meta_description %}{% if seo %}{{seo.meta_description}}{% endif %}{% endblock meta_description %}
+    
+    {% block header %}
+
+        {% include '../common/header_home.html' %}
+
+    {% endblock header %}
+
+    {% block content  %}
+
+        
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main id="content" role="main">
+            <!-- Slider Section -->
+            <div class="mb-5 container home-content">
+                <div class="bg-img-hero" style="background-image: url({% static '/img/1920X422/img1.jpg)'%};"></div>
+                    <div class="overflow-hidden">
+                        <div class="js-slick-carousel u-slick"
+                        data-autoplay='true'
+                        data-autoplay-speed='7000'
+                        data-infinite="1"   
+                        data-pagi-classes="text-center position-absolute right-0 bottom-0 left-0 u-slick__pagination u-slick__pagination--long justify-content-start mb-3 mb-md-4 offset-xl-3 pl-2 pb-1">
+                            {% for banner_image in banner_images %}
+                                <div class="js-slide bg-img-hero-center">
+                                    <div class="min-width-100" style="z-index:0">
+                                        <a href="{{ banner_image.category_follow_to.get_absolute_url }}"><img src="{{ banner_image.banner_image.url }}" style="max-width:100%" alt=""></a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Slider Section -->
+            <div class="container">
+                <!-- Deals-and-tabs -->
+                <div class="mb-5">
+                    <div class="row">
+                        {% if hot_product %}
+                        <!-- Deal -->
+                            <div class="col-md-auto mb-6 mb-md-0">
+                                <div class="hot-product-border">
+                                <div class="p-3 hot-product bg-white min-width-370">
+                                    <div class="d-flex justify-content-between align-items-center m-1 ml-2">
+                                        <h3 class="font-size-22 mb-0 font-weight-normal text-lh-28 max-width-120">Специальное предложение</h3>
+                                        <div class="d-flex gradient align-items-center flex-column justify-content-center bg-primary rounded-pill height-75 width-75 text-lh-1">
+                                            <span class="font-size-12 text-white">Скидка</span>
+                                            <div class="font-size-14 text-white font-weight-bold">{%  minus hot_product.product.price hot_product.product.discount_price %} Лей</div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="mb-4">
+                                        <a href="{{ hot_product.product.get_absolute_url }}" class="d-block text-center"><img class="img-fluid" src="{{ hot_product.product.main_image_thumbnail.url }}" alt="Image Description"></a>
+                                    </div>
+                                    <h5 class="mb-2 font-size-14 text-center mx-auto max-width-180 text-lh-18"><a href="{{ hot_product.product.get_absolute_url }}" class="text-blue font-weight-bold">{{ hot_product.product.name }}</a></h5>
+                                    
+                                    <div class="d-flex align-items-center justify-content-center mb-3">
+                                    {% if hot_product.product.discount_price %}
+                                        <del class="font-size-18 mr-2 text-gray-2">{{ hot_product.product.price }} Лей</del>
+                                        <ins class="font-size-30 text-red text-decoration-none">{{ hot_product.product.discount_price }} Лей</ins>
+                                    {% else %}
+                                        <ins class="font-size-30 text-red text-decoration-none">{{ hot_product.price }}</ins>
+                                    {% endif %}
+                                    </div>
+                                    <div class="mb-3 mx-2">
+                                        <div class="rounded-pill bg-gray-3 height-20 position-relative">
+                                            <span class="gradient position-absolute left-0 top-0 bottom-0 rounded-pill w-30 bg-primary"></span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-2">
+                                        <h6 class="font-size-15 text-gray-2 text-center mb-3">Поспешите! Акция действительна еще:</h6>
+                                        <div class="js-countdown d-flex justify-content-center"
+                                            data-end-date="{{hot_product.deal_end_date.year}}/{{hot_product.deal_end_date.month}}/{{hot_product.deal_end_date.day}}"
+                                            data-hours-format="%H"
+                                            data-minutes-format="%M"
+                                            data-seconds-format="%S">
+                                            <div class="text-lh-1">
+                                                <div class="text-gray-2 font-size-30 bg-gray-4 py-2 px-2 rounded-sm mb-2">
+                                                    <span class="js-cd-hours"></span>
+                                                </div>
+                                                <div class="text-gray-2 font-size-12 text-center">ЧАСЫ</div>
+                                            </div>
+                                            <div class="mx-1 pt-1 text-gray-2 font-size-24">:</div>
+                                            <div class="text-lh-1">
+                                                <div class="text-gray-2 font-size-30 bg-gray-4 py-2 px-2 rounded-sm mb-2">
+                                                    <span class="js-cd-minutes"></span>
+                                                </div>
+                                                <div class="text-gray-2 font-size-12 text-center">МИНУТЫ</div>
+                                            </div>
+                                            <div class="mx-1 pt-1 text-gray-2 font-size-24">:</div>
+                                            <div class="text-lh-1">
+                                                <div class="text-gray-2 font-size-30 bg-gray-4 py-2 px-2 rounded-sm mb-2">
+                                                    <span class="js-cd-seconds"></span>
+                                                </div>
+                                                <div class="text-gray-2 font-size-12 text-center">СЕКУНДЫ</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div></div>
+                            </div>
+                        <!-- End Deal -->
+                        {% endif %}
+                        
+                        <!-- Tab Prodcut -->
+                        <div class="col">
+                            <!-- Features Section -->
+                            <div class="">
+                                <!-- Nav Classic -->
+                                <div class="position-relative bg-white text-center z-index-2">
+                                    <ul class="nav nav-classic nav-tab justify-content-center" id="pills-tab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active " id="pills-one-example1-tab" data-toggle="pill" href="#pills-one-example1" role="tab" aria-controls="pills-one-example1" aria-selected="true">
+                                                <div class="d-md-flex justify-content-md-center align-items-md-center">
+                                                    Популярное
+                                                </div>
+                                            </a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link " id="pills-two-example1-tab" data-toggle="pill" href="#pills-two-example1" role="tab" aria-controls="pills-two-example1" aria-selected="false">
+                                                <div class="d-md-flex justify-content-md-center align-items-md-center">
+                                                    Акции
+                                                </div>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- End Nav Classic -->
+
+                                <!-- Tab Content -->
+                                <div class="tab-content" id="pills-tabContent">
+                                    <div class="tab-pane fade pt-2 show active" id="pills-one-example1" role="tabpanel" aria-labelledby="pills-one-example1-tab">
+                                        <ul class="row list-unstyled products-group no-gutters">
+                                            
+                                             {% for product in products_list  %}
+                                                
+                                                <li class="col-6 col-wd-3 col-md-4 product-item">
+                                                <div class="product-item-border">
+                                                <div class="product-item__outer h-100">
+                                                    <div class="product-item__inner px-xl-4 p-3">
+                                                        {% include 'common/product.html' %}
+                                                    </div>
+                                                </div>
+                                                </div>
+                                            </li>
+                                            
+                                            
+                                             
+                                             {% endfor %}
+                                             {% if is_paginated %}
+                                                <!-- Shop Pagination -->
+                                                <nav class="d-md-flex justify-content-between align-items-center border-top pt-3" aria-label="Page navigation example">
+                                                    <div class="text-center text-md-left mb-3 mb-md-0">Showing 1–25 of 56 results</div>
+                                                    <ul class="pagination mb-0 pagination-shop justify-content-center justify-content-md-start">
+                                                        <li class="page-item"><a class="page-link current" href="#">1</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                    </ul>
+                                                </nav>
+                                                <!-- End Shop Pagination -->
+                                             {% endif %}
+
+                                            
+                                        </ul>
+                                    </div>
+                                    <div class="tab-pane fade pt-2" id="pills-two-example1" role="tabpanel" aria-labelledby="pills-two-example1-tab">
+                                        <ul class="row list-unstyled products-group no-gutters">
+                                            {% for product in stocks %}
+                                            
+                                                <li class="col-6 col-wd-3 col-md-4 product-item">
+                                                    <div class="product-item__outer h-100">
+                                                        <div class="product-item__inner px-xl-4 p-3">
+                                                            {% include 'common/product.html' %}
+                                                        </div>
+                                                    </div>
+                                                </li>
+
+                                            {% endfor %}
+                                            
+                                        </ul>
+                                    </div>
+                                    
+                                </div>
+                                <!-- End Tab Content -->
+                            </div>
+                            <!-- End Features Section -->
+                        </div>
+                        <!-- End Tab Prodcut -->
+                    </div>
+                </div>
+                <!-- End Deals-and-tabs -->
+            </div>
+            <div class="container">
+            {% cache 86400 newest_and_popular_home %}
+                <!-- Newest products -->
+                {% include 'common/newest_products.html' %}
+                <!-- Popular products -->
+                {% include 'common/popular_products.html' %}
+                <!-- End Popular products -->
+            </div>
+            {% endcache %}
+
+    <!-- Products-4-1-4 -->
+
+            <div class="products-group-4-1-4 space-1 bg-gray-7">
+                <h2 class="sr-only">Сетка товаров</h2>
+                <div class="container">
+                {% cache 86400 footer_products %}
+
+                    <!-- Nav Classic -->
+                    <div class="position-relative text-center z-index-2 mb-3">
+                        <ul class="nav nav-classic nav-tab nav-tab-sm px-md-3 justify-content-start justify-content-lg-center flex-nowrap flex-lg-wrap overflow-auto overflow-lg-visble border-md-down-bottom-0 pb-1 pb-lg-0 mb-n1 mb-lg-0" id="pills-tab-1" role="tablist">
+                            {% for category_name, category_value in footer_categories_with_products.items %}
+                                <li class="nav-item flex-shrink-0 flex-lg-shrink-1">
+                                    <a class="nav-link {{ category_value|get:'active' }}" id="{{ category_value|get:'slug' }}" data-toggle="pill" href="#{{ category_value|get:'slug' }}-tab" role="tab" aria-controls="Tpills-one-example1" aria-selected="true">
+                                        <div class="d-md-flex justify-content-md-center align-items-md-center">
+                                            {{ category_name }}
+                                        </div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <!-- End Nav Classic --> 
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="Tpills-tabContent">
+                            {% for category_name, category_value in footer_categories_with_products.items %}
+                            <div class="tab-pane fade pt-2 show {{ category_value|get:'active' }}" id="{{ category_value|get:'slug' }}-tab" role="tabpanel" aria-labelledby="{{ category_value|get:'slug' }}">
+                                <div class="row no-gutters">
+                                        <ul class="row list-unstyled products-group no-gutters mb-0 flex-wd-row">
+                                            {% for product in category_value|get:'products' %}
+                                                    <li class="col-xl-2 col-md-3 col-lg-3 col-6 product-item max-width-xl-100 remove-divider">
+                                                        <div class="product-item__outer h-100 w-100 prodcut-box-shadow">
+                                                            <div class="product-item__inner bg-white p-3">
+                                                                {% include 'common/product.html' %}
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                            {% endfor %}
+                                            
+                                        </ul>
+                                </div>
+                        </div>
+
+                        {% endfor %}
+                        
+                
+                </div>
+
+                {% endcache %}
+
+
+               
+            </div>
+            <!-- End Products-4-1-4 -->
+
+            
+        </main>
+        <!-- ========== END MAIN CONTENT ========== -->
+
+    {% endblock content %}
+
+
+    {% block footer %}
+
+        {% include '../common/footer_home.html' %}
+
+    {% endblock footer %}
+

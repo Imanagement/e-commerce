@@ -1,0 +1,448 @@
+{% extends 'base.html' %}
+{% load  static %}
+{% load rate_tags credit_tags %}
+
+    {% block head_title %}{{ object.page_title }}{% endblock head_title %} 
+    {% block meta_description %}{{ object.meta_description }}{% endblock %}
+
+    {% block content %}
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main id="content" role="main">
+            <!-- breadcrumb -->
+            <div class="bg-gray-13 bg-md-transparent">
+                <div class="container">
+                    <!-- breadcrumb -->
+                    <div class="my-md-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-3 flex-nowrap flex-xl-wrap overflow-auto overflow-xl-visble">
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1"><a href="{% url 'core:home' %}">Главная</a></li>
+                                {% for category in object.category.get_ancestors %}
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1 active" aria-current="page"><a href="{{ category.get_absolute_url }}">{{ category.name }}</a></li>
+                                {% endfor %}
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1 active" aria-current="page"><a href="{{ object.category.get_absolute_url }}">{{ object.category.name }}</a></li>
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1 active" aria-current="page">{{ object.name }}</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <!-- End breadcrumb -->
+                </div>
+            </div>
+            <!-- End breadcrumb --> 
+            <div class="container">
+                <!-- Single Product Body -->
+                <div class="mb-xl-14 mb-6">
+                    <div class="row">
+                        <div class="col-md-5 mb-4 mb-md-0">
+                            <div id="sliderSyncingNav" class="js-slick-carousel u-slick mb-2"
+                                data-infinite="true"
+                                data-arrows-classes="d-none d-lg-inline-block u-slick__arrow-classic u-slick__arrow-centered--y rounded-circle"
+                                data-arrow-left-classes="fas fa-arrow-left u-slick__arrow-classic-inner u-slick__arrow-classic-inner--left ml-lg-2 ml-xl-4"
+                                data-arrow-right-classes="fas fa-arrow-right u-slick__arrow-classic-inner u-slick__arrow-classic-inner--right mr-lg-2 mr-xl-4"
+                                data-nav-for="#sliderSyncingThumb">
+                                <div class="js-slide" style="cursor: pointer;">
+                                    <a data-fancybox="gallery" href="{{ object.main_image.url }}"><img class="img-fluid w90" src="{{object.main_image.url}}" alt="Image Description"></a>
+                                </div>
+                                {% for product_image in product_images  %}
+                                    <div class="js-slide" style="cursor: pointer;">
+                                    <a data-fancybox="gallery" href="{{ product_image.image.url }}"><img class="img-fluid w90" src="{{product_image.image.url}}" alt="Image Description"></a>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div id="sliderSyncingThumb" class="js-slick-carousel u-slick u-slick--slider-syncing u-slick--slider-syncing-size u-slick--gutters-1 u-slick--transform-off"
+                                data-infinite="true"
+                                data-slides-show="5"
+                                data-is-thumbs="true"
+                                data-nav-for="#sliderSyncingNav">
+                                <div class="js-slide" style="cursor: pointer;">
+                                    <img class="img-fluid" src="{{object.main_image.url}}" alt="Image Description">
+                                </div>
+                                
+                                {% for product_image in product_images  %}
+                                    <div class="js-slide" style="cursor: pointer;">
+                                    <img class="img-fluid" src="{{product_image.image.url}}" alt="Image Description">
+                                </div>
+                                {% endfor %}
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-7 mb-md-6 mb-lg-0">
+                            <div class="mb-2">
+                                <div class="border-bottom mb-3 pb-md-1 pb-3">
+                                    <a href="{{object.category.get_absolute_url}}" class="font-size-12 text-gray-5 mb-2 d-inline-block">{{ object.category.name }}</a>
+                                    <h2 class="font-size-25 text-lh-1dot2">{{ object.name }}</h2>
+                                    <div class="mb-2">
+                                        <a class="d-inline-flex align-items-center small font-size-15 text-lh-1" href="#">
+                                            <div class="text-warning text-ls-n2 font-size-24 read_only_rating" data-rate-value='{{ product_review_avg }}' style="width: 80px;">
+                                               
+                                            </div>
+                                            <span class="text-secondary font-size-13">(
+                                                {% if object.productreview_set.all|length == 1 %}
+                                                {{ object.productreview_set.all|length }} отзыв покупателя
+                                                {% elif object.productreview_set.all|length > 1 and object.productreview_set.all|length < 4 %}
+                                                {{ object.productreview_set.all|length }} отзыва покупателей
+                                                {% else %}
+                                                {{ object.productreview_set.all|length }} отзывов покупателей
+                                                {% endif %})
+                                            </span>
+                                        </a>
+                                    </div>
+                                    <div class="d-md-flex align-items-center">
+                                        <div class=" text-gray-9 font-size-14">
+                                        {% if object.not_in_stock %}
+                                            Нет в наличии
+                                        {% else %}
+                                            <span class="text-green font-weight-bold">В наличии</span> (В течении 1-4 дней)
+                                        {% endif %}
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="d-md-flex mt-4 mb-2 align-items-center">
+                                        <span class=" font-size-14">Способы доставки:</span>
+
+                                    </div>
+                                    <div class="d-md-flex align-items-center">
+                                        
+                                        {% for delievery_option in delievery_options %}
+                                            <div class="text-gray-9 mr-2 font-size-14">
+                                                {{delievery_option.name}} |
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="flex-horizontal-center flex-wrap mb-4">
+                                    <a href="{{ object.get_add_to_wishlist_url }}" class="text-gray-6 font-size-13 mr-2"><i class="ec ec-favorites mr-1 font-size-15"></i> В Избранное</a>
+                                    <a href="{{ object.get_add_to_compare_url }}" class="text-gray-6 font-size-13 ml-2"><i class="ec ec-compare mr-1 font-size-15"></i> Сравнить</a>
+                                </div>
+                                <div class="mb-2">
+                                    <ul class="font-size-14 pl-3 ml-1 text-gray-110">
+                                        {% for property_value in product_property_values|slice:":5" %}
+                                            <li>{{ property_value }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                <p><strong>SKU</strong>: {{ object.sku }}</p>
+                                <form class='add-to-cart-form' action="{{object.get_add_to_cart_url}}" method="POST">
+                                {% csrf_token %}
+                                {% if object.category.extraoption_set.all %}
+                                    <div class="extra-options mb-4">
+                                    {% for extra_option in object.category.extraoption_set.all %}
+                                            <div class="row custom-control custom-checkbox m-2" style="align-items: center; padding-left: 0.9rem;">
+                                                <input type="checkbox" value="{{ extra_option.id }}" name="extra-option" class="custom-control-input" id="{{ extra_option.slug }}">
+                                                <label class="custom-control-label" for="{{ extra_option.slug }}">{{ extra_option.name }} +{{ extra_option.cost }} Лей<span class="text-gray-25 font-size-12 font-weight-normal"></span></label>
+                                            </div>
+                                    {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="max-width-150 mb-4">
+                                     <h6 class="font-size-14">Количество</h6>
+                                     <!-- Quantity -->
+                                     <div class="border rounded-pill py-2 px-3 border-color-1">
+                                         <div class="js-quantity row align-items-center">
+                                             <div class="col">
+                                                 <input class="js-result form-control h-auto border-0 rounded p-0 shadow-none" id='add-to-cart-value' name='product_total_count' type="number" value="1">
+                                             </div>
+                                                
+                                             <div class="col-auto pr-1">
+                                                 <a onclick='cart_action("reduce")' class="js-minus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
+                                                     <small class="fas fa-minus btn-icon__inner"></small>
+                                                 </a>
+                                                 <a onclick='cart_action("increase")' class="js-plus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
+                                                     <small class="fas fa-plus btn-icon__inner"></small>
+                                                 </a>
+                                             </div>
+                                         </div>
+                                     </div>
+                                     <!-- End Quantity -->
+                               </div>
+                                <div class="mb-4">
+                                    <div class="d-flex flex-column align-items-baseline">
+                                        {% if object.discount_price  %}
+                                            <ins class="font-size-36 text-decoration-none">{{ object.discount_price }} Лей</ins>
+                                            <del class="font-size-20 ml-2 text-gray-6">{{ object.price }} Лей</del>
+                                            <ins class="font-size-18 text-decoration-none">{{ object.discount_price|calculate_summary_in_credit }} Лей в месяц</ins>
+
+                                        {% else %}
+                                            <ins class="font-size-36 text-decoration-none">{{ object.price }} Лей</ins>
+                                            <ins class="font-size-18 text-decoration-none">{{ object.price|calculate_summary_in_credit }} Лей в месяц</ins>
+                                        {% endif %}
+
+                                    </div>
+                                </div>
+
+                                
+                                <div class="d-md-flex align-items-end mb-3">
+                                    <div class="row">
+                                    <div class="btn px-5 btn-primary-dark m-0-15 transition-3d-hover button-hover ml-md-3 add-to-cart-button">
+                                       <div class="button-inners">
+                                            <i class="ec ec-add-to-cart mr-2 font-size-20"></i> <input type="submit" class=" " value="Купить">
+                                        </div>
+                                    </div>
+                                    </div>
+                                    <div class="ml-md-3">
+                                        <a href="{% url 'core:credit' %}" class="btn px-5 mt-5 btn-dark transition-3d-hover"><i class="ec ec-add-to-cart mr-2 font-size-20"></i> Купить в кредит </a>
+                                    </div>
+                                    
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Single Product Body -->
+                <!-- Single Product Tab -->
+                <div class="mb-8">
+                    <div class="position-relative position-md-static px-md-6">
+                        <ul class="nav nav-classic nav-tab nav-tab-lg justify-content-xl-center flex-nowrap flex-xl-wrap overflow-auto overflow-xl-visble border-0 pb-1 pb-xl-0 mb-n1 mb-xl-0" id="pills-tab-8" role="tablist">
+                            <li class="nav-item flex-shrink-0 flex-xl-shrink-1 z-index-2">
+                                <a class="nav-link active" id="Jpills-two-example1-tab" data-toggle="pill" href="#Jpills-two-example1" role="tab" aria-controls="Jpills-two-example1" aria-selected="false">Описание</a>
+                            </li>
+                            <li class="nav-item flex-shrink-0 flex-xl-shrink-1 z-index-2">
+                                <a class="nav-link" id="Jpills-three-example1-tab" data-toggle="pill" href="#Jpills-three-example1" role="tab" aria-controls="Jpills-three-example1" aria-selected="false">Характеристики</a>
+                            </li>
+                            <li class="nav-item flex-shrink-0 flex-xl-shrink-1 z-index-2">
+                                <a class="nav-link" id="Jpills-four-example1-tab" data-toggle="pill" href="#Jpills-four-example1" role="tab" aria-controls="Jpills-four-example1" aria-selected="false">Отзывы</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Tab Content -->
+                    <div class="borders-radius-17 border p-4 mt-4 mt-md-0 px-lg-10 py-lg-9">
+                        <div class="tab-content" id="Jpills-tabContent">
+                            <div class="tab-pane product-description fade active show" id="Jpills-two-example1" role="tabpanel" aria-labelledby="Jpills-two-example1-tab">
+                                {{ object.description|safe }}
+                            </div>
+                            <div class="tab-pane fade" id="Jpills-three-example1" role="tabpanel" aria-labelledby="Jpills-three-example1-tab">
+                                <div class="mx-md-5 pt-1">
+                                    <div class="table-responsive mb-4">
+                                        <table class="table table-hover">
+                                            <tbody>
+                                                {% for property_value in object.propertyvalue_set.all %}
+                                                    <tr>
+                                                        <th class="px-4 px-xl-5 border-top-0">{{ property_value.property.name }}</th>
+                                                        <td class="border-top-0">{{ property_value.value }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="Jpills-four-example1" role="tabpanel" aria-labelledby="Jpills-four-example1-tab">
+                                <div class="row mb-8">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <h3 class="font-size-18 mb-6">
+                                            {% if product_reviews|length == 0 %}
+                                                К данному товару отзывы отсуствуют. Станьте первым!
+                                                {% else %}
+                                                    Основано на {{ product_reviews|length }} {% if product_reviews|length > 1 %}отзывах{% else %}отзыве{% endif %}
+                                            {% endif %} 
+                                            </h3>
+                                            {% if product_review_avg > 0 %}
+                                            <h2 class="font-size-30 font-weight-bold text-lh-1 mb-0">{{ product_review_avg }}</h2>
+                                            {% endif %}
+                                            
+                                        </div>
+
+                                        <!-- Ratings -->
+                                        <ul class="list-unstyled">
+                                            {% for review_rate in reviews_list %}
+                                            
+                                            <li class="py-1">
+                                                <a class="row align-items-center mx-gutters-2 font-size-1" href="javascript:;">
+                                                    <div class="col-auto mb-2 mb-md-0">
+                                                        <div class="text-warning text-ls-n2 font-size-24 read_only_rating" data-rate-value='{{review_rate.customer_review}}' style="width: 80px;">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto mb-2 mb-md-0">
+                                                        <div class="progress ml-xl-5" style="height: 10px; width: 200px;">
+                                                            <div class="progress-bar" role="progressbar" style="width:{% calculate_reviews_percents review_rate.count total_reviews_count %}%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-auto text-right">
+                                                        <span class="text-gray-90">{{review_rate.count}}</span>
+                                                    </div>
+                                                </a>
+                                            </li>
+
+                                            {% endfor %}
+                                            
+                                        </ul>
+                                        <!-- End Ratings -->
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% if request.user.is_authenticated %}
+                                        
+                                            <h3 class="font-size-18 mb-5">Оставить отзыв</h3>
+                                        <!-- Form -->
+                                        <form action="{{ object.get_product_leave_review_url }}" method="POST" class="js-validate">
+                                            {% csrf_token %}
+                                            <div class="row align-items-center mb-4">
+                                                <div class="col-md-4 col-lg-3">
+                                                    <label for="rating" class="form-label mb-0">Ваша оценка</label>
+                                                </div>
+                                                <div class="col-md-8 col-lg-9">
+                                                    <input type="hidden" id="product-review" value='5' name='review'>
+                                                    <div class="text-warning text-ls-n2 font-size-36 rating" data-rate-value=5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="js-form-message form-group mb-3 row">
+                                                <div class="col-md-4 col-lg-3">
+                                                    <label for="descriptionTextarea" class="form-label">Ваш отзыв</label>
+                                                </div>
+                                                <div class="col-md-8 col-lg-9">
+                                                    <textarea class="form-control" name='review_text' rows="3" id="descriptionTextarea"
+                                                    data-msg="Please enter your message."
+                                                    data-error-class="u-has-error"
+                                                    data-success-class="u-has-success"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="js-form-message form-group mb-3 row">
+                                                <div class="col-md-4 col-lg-3">
+                                                    <label for="inputName" class="form-label">Ваше имя <span class="text-danger">*</span></label>
+                                                </div>
+                                                <div class="col-md-8 col-lg-9">
+                                                    <input type="text" class="form-control" name="name" id="inputName" aria-label="Alex Hecker" required
+                                                    data-msg="Please enter your name."
+                                                    data-error-class="u-has-error"
+                                                    data-success-class="u-has-success">
+                                                </div>
+                                            </div>
+                                            <div class="js-form-message form-group mb-3 row">
+                                                <div class="col-md-4 col-lg-3">
+                                                    <label for="emailAddress" class="form-label">Ваш Email <span class="text-danger">*</span></label>
+                                                </div>
+                                                <div class="col-md-8 col-lg-9">
+                                                    <input type="email" class="form-control" name="email" id="emailAddress" aria-label="alexhecker@pixeel.com" required
+                                                    data-msg="Please enter a valid email address."
+                                                    data-error-class="u-has-error"
+                                                    data-success-class="u-has-success">
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="offset-md-4 offset-lg-3 col-auto">
+                                                    <button type="submit" class="btn btn-primary-dark btn-wide transition-3d-hover">Оставить отзыв</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <!-- End Form -->
+
+                                        {% else %}
+                                            <h3 class="font-size-18 mb-5" >Нам очень важен Ваш отзыв. Пожалуйста, <nobr id="sidebarNavToggler" class=" font-size-18 u-header-topbar__nav-link"><a href="{% url 'account_signup' %}">Зарегистрируйтесь</a></nobr> чтобы оставить свой отзыв о данном товаре</h3>
+                                        {% endif %}
+
+
+
+                                    </div>
+                                </div>
+
+                                <div class="reviews-list">
+                                
+                                {% for review in product_reviews|slice:":5" %}
+                                
+                                    <!-- Review -->
+                                    <div class="border-bottom border-color-1 pb-4 mb-4">
+                                        <!-- Review Rating -->
+                                        <div class="d-flex justify-content-between align-items-center text-secondary font-size-1 mb-2">
+                                            <div class="text-warning text-ls-n2 font-size-24 read_only_rating" data-rate-value='{{review.customer_review}}' style="width: 80px;">
+                                                
+                                            </div>
+                                        </div>
+                                        <!-- End Review Rating -->
+
+                                        <p class="text-gray-90">{{ review.customer_review_text }}</p>
+
+                                        <!-- Reviewer -->
+                                        <div class="mb-2">
+                                            <strong>{{ review.customer_name }}</strong>
+                                            <span class="font-size-13 text-gray-23">- {{ review.publish_date.date }}</span>
+                                        </div>
+                                        <!-- End Reviewer -->
+                                    </div>
+                                    <!-- End Review -->
+
+                                
+                                {% endfor %}
+
+                                {% if object.productreview_set.all|length > 5 %}
+                                    <button class="btn btn-primary-dark btn-wide transition-3d-hover" id="get_all_reviews">Смотреть все отзывы</button>
+                                {% endif %}
+                                
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Tab Content -->
+                </div>
+                <!-- End Single Product Tab -->
+                
+            </div>
+        </main>
+        <!-- ========== END MAIN CONTENT ========== -->
+        
+    {% endblock content %}
+
+    {% block additional_scripts %}
+
+        <script>
+        
+            function cart_action(operation){
+                input = document.getElementById('add-to-cart-value')
+                if(operation == 'increase') {
+                    input.value++ ;
+                } else if(operation =='reduce'){
+                    input.value--;
+                }
+            }
+
+        </script>
+
+        <script>
+        
+            $(document).ready(function(e){
+                $('#get_all_reviews').on('click', function(e){
+                    $.ajax({
+                        url: "{{ object.get_all_reviews_url }}",
+                        success: function(data){
+                            if(data.length > 0) {
+                                $('.reviews-list').html(data)
+                                options = {
+                                    update_input_field_name: $('#product-review'),
+                                }
+                                read_only_options = {
+                                    readonly: true,
+                                }
+                                $(".rating").rate(options);
+                                $(".read_only_rating").rate(read_only_options)
+
+                            }
+                        },
+                        error: function(data, error){
+                            alert('Возникла непредвиденная ошибка')
+                        },
+                    })
+                })
+            })
+            
+        </script>
+
+        <script>
+
+        $(document).ready(function(e){
+            options = {
+                update_input_field_name: $('#product-review'),
+            }
+            read_only_options = {
+                readonly: true,
+            }
+            $(".rating").rate(options);
+            $(".read_only_rating").rate(read_only_options)
+
+        })
+
+        </script>
+        
+    {% endblock additional_scripts %}

@@ -1,0 +1,36 @@
+<div class="js-slide products-group">
+    <div class="product-item">
+        <div class="product-item__outer h-100">
+            <div class="product-item__inner px-wd-4 p-2 p-md-3">
+                <div class="product-item__body pb-xl-2">
+                    <div class="mb-2"><a href="{{product.category.get_absolute_url}}" class="font-size-12 text-gray-5">{{product.category.name}}</a></div>
+                    <h5 class="mb-1 product-item__title"><a href="{{product.get_absolute_url}}" class="text-blue font-weight-bold">{{ product.name }}</a></h5>
+                    <div class="mb-2">
+                        <a href="{{ product.get_absolute_url }}" class="d-block text-center"><img class="img-fluid" src="{{ product.main_image_thumbnail.url }}" alt="Image Description"></a>
+                    </div>
+                    <div class="flex-center-between mb-1">
+                        <div class="prodcut-price">
+                            <div class="text-gray-100">{% if product.discount_price %}
+                                <div class="prodcut-price d-flex align-items-center position-relative">
+                                    <ins class="font-size-20 text-red text-decoration-none">{{ product.discount_price }} Лей</ins>
+                                    <del class="font-size-14 tex-gray-6 position-absolute bottom-1-5">{{ product.price }} Лей</del>
+                                </div>
+                            {% else %}
+                                {{ product.price }} Лей
+                            {% endif %} </div>
+                        </div>
+                        <div class="d-none d-xl-block prodcut-add-cart">
+                            <a href="{{ product.get_add_to_cart_url }}" class="btn-add-cart btn-primary transition-3d-hover"><i class="ec ec-add-to-cart"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-item__footer">
+                    <div class="border-top pt-2 flex-center-between flex-wrap">
+                        <a href="{{ product.get_add_to_compare_url }}" class="text-gray-6 font-size-13"><i class="ec ec-compare mr-1 font-size-15"></i> Сравнить</a>
+                        <a href="{{ product.get_add_to_wishlist_url }}" class="text-gray-6 font-size-13"><i class="ec ec-favorites mr-1 font-size-15"></i> В Избранное</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

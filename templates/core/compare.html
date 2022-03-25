@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load  static %}
+{% load rate_tags %}
+
+    {% block head_title %}{% if seo %}{{seo.page_title}}{% endif %}{% endblock head_title %}
+    {% block meta_description %}{% if seo %}{{seo.meta_description}}{% endif %}{% endblock meta_description %}
+ 
+
+    {% block content %}
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main id="content" role="main">
+            <!-- breadcrumb -->
+            <div class="bg-gray-13 bg-md-transparent">
+                <div class="container">
+                    <!-- breadcrumb -->
+                    <div class="my-md-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-3 flex-nowrap flex-xl-wrap overflow-auto overflow-xl-visble">
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1"><a href="{% url 'core:home' %}">Главная</a></li>
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1 active" aria-current="page">Сравнение</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <!-- End breadcrumb -->
+                </div>
+            </div>
+            <!-- End breadcrumb -->
+
+            {% if products %}
+            
+                <div class="container">
+                    <div class="table-responsive table-bordered table-compare-list mb-10 border-0">
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th class="min-width-200">Продукт</th>
+                                    {% for product in products %}
+
+                                        <td>
+                                            <a href="{{ product.get_absolute_url }}" class="product d-block">
+                                                <div class="product-compare-image">
+                                                    <div class="d-flex mb-3">
+                                                        <img class="img-fluid mx-auto" src="{{ product.main_image_thumbnail.url }} " alt="Image Description">
+                                                    </div>
+                                                </div>
+                                                <h3 class="product-item__title text-blue font-weight-bold mb-3">{{ product.name }}</h3>
+                                            </a>
+                                            <div class="d-flex justify-content-center">
+                                            <div class="text-warning mb-2 font-size-18 read_only_rating" data-rate-value='{{ product.productreview__customer_review__avg }}' style="">
+                                            </div></div>
+                                        </td>
+
+                                    {% endfor %}
+
+
+                                </tr>
+
+                                <tr>
+
+                                    <th>Цена</th>
+
+                                    {% for product in products %}
+
+                                        <td>
+                                            <div class="product-price">
+                                            {% if product.discount_price %}
+                                                {{ product.discount_price }} Лей
+                                            {% else %}
+                                                {{ product.price }} Лей
+                                            {% endif %}
+                                            </div>
+                                        </td>
+
+                                    {% endfor %}
+
+                                </tr>
+                                {% comment %} {% for property, value in table.items %}
+
+
+                                    <th>{{ property }}</th>
+                                    {% for product_slug, property_value in value.items %}
+
+                                       <td><span>{{ property_value }}</span></td>
+
+                                    {% endfor %}
+
+                                </tr> {% endcomment %}
+
+
+                                {% for property in table.values %}
+                                <tr>
+
+                                    <th>{{ property.name }}</th>
+                                    {% for product in products %}
+
+                                       <td><span>{{ property.products|get:product.id }}</span></td>
+
+                                    {% endfor %}
+
+                                </tr>    
+                                {% endfor %}
+
+                                <tr>
+                                    <th> Добавить в корзину </th>
+                                   {% for product in products %}
+
+                                        <td>
+                                            <div class=""><a href="{{ product.get_add_to_cart_url }}" class="btn btn-soft-secondary mb-3 mb-md-0 font-weight-normal px-5 px-md-3 px-xl-5">В корзину</a></div>
+                                        </td>
+
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <th>Удалить</th>
+                                    {% for product in products %}
+
+                                        <td class="text-center">
+                                            <a href="{{ product.get_remove_from_compare_url }}" class="text-gray-90"><i class="fa fa-times"></i></a>
+                                        </td>
+
+                                    {% endfor %}
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="container">
+                    <div class="my-6">
+                        <h1 class="text-center">У вас пока нет товаров для сравнения.</h1>
+                    </div>
+                </div>
+
+            {% endif %}
+        </main>
+        <!-- ========== END MAIN CONTENT ========== -->
+
+    {% endblock content %}
+
+    {% block additional_scripts %}
+        <script>
+
+        $(document).ready(function(e){
+            read_only_options = {
+                readonly: true,
+            }
+            $(".read_only_rating").rate(read_only_options)
+
+        })
+
+        </script>
+    {% endblock additional_scripts %}

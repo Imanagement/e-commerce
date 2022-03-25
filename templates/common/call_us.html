@@ -1,0 +1,65 @@
+{% load static %}
+<div class="log-in">
+    <a href="#" id="popup__toggle" data-fancybox data-src="#panel_call" class="popup-with-move-anim" onclick="return true;">
+    <div class="circlephone" style="transform-origin: center;"></div>
+    <div class="circle-fill" style="transform-origin: center;"></div>
+    <div class="img-circle" style="transform-origin: center;"><div class="img-circleblock" style="transform-origin: center;"></div></div>
+    </a>
+</div>
+    <div class="panel_call" id="panel_call" style="display:none;">
+    <h4 class="text-center text-black">Заказать звонок</h4>
+        <form class="d-flex flex-column" id="panel-call-form" action="{% url 'core:customer-call-back' %}" method="POST">
+            {% csrf_token %}
+            <p id="validateMessage" style="color:red;display:none">Пожалуйста, введите валидный номер телефона республики Молдова.<br> 
+            (Например 079451310 или +37379451310)</p>
+            <input class="call-us-input" id="customer-name" name="name" placeholder="Ваше имя" type="text">
+            <input class="call-us-input" id="customer-phone" name="phone" placeholder="Ваш телефон" type="nubmer">
+            <input class="call-us-input call-us-comment" id="customer-comment" name="comment" placeholder="Комментарий" type="text">
+            <input class="text-white" id="customer-phone_send" value="Отправить" type="submit">
+            <span>Нажимая на кнопку, Вы даете согласие на обработку своих персональных данных</span>
+            
+        </form>
+    </div>
+
+<div style="display:none;background-color:#cecece;position: fixed;top: 50%;left: 50%;margin-right: -50%;transform: translate(-50%, -50%);z-index: 5;margin-top:0;border-radius:10px;width:335px;border-radius:45px;" id="successModal" class="animated-modal text-center p-5 fancybox-content">
+        <h2 class="text-white">
+            Отправлено!
+        </h2>
+        <p class="text-white">
+            Наши специалисты свяжутся с Вами в ближайшее время.<br>
+        </p>
+        <p class="mb-0">
+            <svg width="150" height="150" viewBox="0 0 510 510" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <path fill="#fff" d="M150.45,206.55l-35.7,35.7L229.5,357l255-255l-35.7-35.7L229.5,285.6L150.45,206.55z M459,255c0,112.2-91.8,204-204,204 S51,367.2,51,255S142.8,51,255,51c20.4,0,38.25,2.55,56.1,7.65l40.801-40.8C321.3,7.65,288.15,0,255,0C114.75,0,0,114.75,0,255 s114.75,255,255,255s255-114.75,255-255H459z"></path>
+            </svg>
+        </p>
+    <button style="position:absolute;" type="button" data-fancybox-close="" class="fancybox-close-small" title="Close"></button></div>
+
+<div style="display:none;background-color:#cecece;position:fixed;top:50%;left:50%;margin-right: -50%;transform: translate(-50%, -50%);z-index: 5;margin-top: 0px;border-radius:45px;width:335px;" id="failModal" class="animated-modal text-center p-5 fancybox-content">
+        <h2 class="text-white">
+            Ууууупс...
+        </h2>
+        <p style="text-align:left;"class="text-white">
+            Что-то пошло не так. Скорее всего Вы уже отправили нам заявку.<br>
+            Пожалуйста, дождитесь ответа оператора.<br>
+        </p>
+        <p class="mb-0">
+            <img src="{% static '/img/404.svg' %}" alt="">
+        </p>
+    <button style="position:absolute;" type="button" data-fancybox-close="" class="fancybox-close-small" title="Close"></button></div>
+
+
+<script>
+// $(document).ready(function(e){$("#panel-call-form").on("submit",function(e){;var n=document.forms["panel-call-form"].phone.value;if("0"!==n[0]&&n.length<9||"+"!==n[0]&&"3"!==n[1]&&"7"!==n[2]&&"3"!==n[3]&&n.length<13)return $("#validateMessage").fadeIn(),!1;event.preventDefault(),$.post('{% url "core:customer-call-back" %}',$("#panel-call-form").serialize(),function(e,n,l){$.fancybox.close(),200==l.status?$.fancybox.open({src:"#successModal",type:"inline"}):$.fancybox.open({src:"#failModal",type:"inline"})})})});
+$(document).ready(function (e) {
+    $("#panel-call-form").on("submit", function (e) {
+        var n = document.forms["panel-call-form"].phone.value;
+        if (("0" !== n[0] && n.length < 9) || ("+" !== n[0] && "3" !== n[1] && "7" !== n[2] && "3" !== n[3] && n.length < 13)) return $("#validateMessage").fadeIn(), !1;
+        event.preventDefault(),
+            $.post('{% url "core:customer-call-back" %}', $("#panel-call-form").serialize(), function (e, n, l) {
+                $.fancybox.close(), 200 == l.status ? $.fancybox.open({ src: "#successModal", type: "inline" }) : $.fancybox.open({ src: "#failModal", type: "inline" });
+            });
+    });
+});
+
+</script>

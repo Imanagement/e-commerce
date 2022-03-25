@@ -1,0 +1,128 @@
+{% load  static %}
+{% load cart_template_tags %}
+            <table class="table" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th class="product-remove">&nbsp;</th>
+                        <th class="product-thumbnail">&nbsp;</th>
+                        <th class="product-name">Товар</th>
+                        <th class="product-price">Цена</th>
+                        <th class="product-quantity w-lg-15">Количество</th>
+                        <th class="product-subtotal">Всего</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for order_product in object.products.all %}
+                    <tr class="">
+                        <td class="text-center">
+                            <a href="{{order_product.product.get_remove_from_cart_url}}" class="text-gray-32 font-size-26">×</a>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <a href="{{ order_product.product.get_absolute_url }}"><img class="img-fluid max-width-100 p-1 border border-color-1" src="{{order_product.product.main_image.url}}" alt="Image Description"></a>
+                        </td>
+                        <td data-title="Товар">
+                            <a href="{{ order_product.product.get_absolute_url }}" class="font-size-14 text-gray-90">{{ order_product.product.name }}</a>
+                        </td>
+                        <td data-title="Цена">
+                            {% if order_product.product.discount_price %}
+                                <span class="font-size-14">{{ order_product.product.discount_price }} Лей</span>
+                            {% else %}
+                                <span class="font-size-14">{{ order_product.product.price }} Лей</span>
+                            {% endif %}
+                        </td>
+                        <td data-title="Количество">
+                            <span class="sr-only">Количество</span>
+                            <!-- Quantity -->
+                            <div class="border rounded-pill py-1 width-122 w-xl-80 px-3 border-color-1">
+                                <div class="js-quantity row align-items-center">
+                                    <div class="col">
+                                        <input class="js-result form-control h-auto border-0 rounded p-0 shadow-none" id='js-update-cart-input' name={{order_product.product.slug}} type="number" min='1' maxlength='5' value="{{ order_product.quantity }}">
+                                    </div>
+                                    <div class="col-auto pr-1">
+                                        <a onclick='cart_decrease(this);update_cart()' class="js-minus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
+                                            <small class="fas fa-minus btn-icon__inner"></small>
+                                        </a>
+                                        <a onclick='cart_increase(this);update_cart()' class="js-plus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
+                                            <small class="fas fa-plus btn-icon__inner"></small>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Quantity -->
+                        </td>
+                        <td data-title="Всего">
+                            {% if order_product.product.discount_price %}
+                                <span class="font-size-14">{{ order_product.get_total_discount_summary }} Лей</span>
+                            {% else %}
+                                <span class="font-size-14">{{ order_product.get_total_summary }} Лей</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% for extra_option in order_product.extraoptionordered_set.all %}
+                        <tr class="">
+                            <td class="text-center">
+                            </td>
+                            <td class="d-none d-md-table-cell">
+                                <span class="font-size-14">Дополнительная стоимость:</span>
+                            </td>
+                            <td data-title="Товар">
+                                <p class="m-0 font-size-14 text-gray-90">{{ extra_option.name }}</p>
+                            </td>
+                            <td data-title="Цена">
+                                    <span class="font-size-14">{{ extra_option.cost }} Лей</span>
+                            </td>
+                            <td data-title="Количество">
+                                <span class="sr-only">Количество</span>
+                                <!-- Quantity -->
+                                <div class="border rounded-pill py-1 width-122 w-xl-80 px-3 border-color-1">
+                                    <div class="js-quantity row align-items-center">
+                                        <div class="col">
+                                            <input class="js-result form-control h-auto border-0 rounded p-0 shadow-none" id='js-update-cart-input' name='extra-option-{{extra_option.slug}}' type="number" min='1' maxlength='5' value="{{ extra_option.count }}">
+                                        </div>
+                                        <div class="col-auto pr-1">
+                                            <a onclick='cart_decrease(this);update_cart()' class="js-minus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
+                                                <small class="fas fa-minus btn-icon__inner"></small>
+                                            </a>
+                                            <a onclick='cart_increase(this);update_cart()' class="js-plus btn btn-icon btn-xs btn-outline-secondary rounded-circle border-0" href="javascript:;">
+                                                <small class="fas fa-plus btn-icon__inner"></small>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- End Quantity -->
+                            </td>
+                            <td data-title="Всего">
+                                <span class="font-size-14">{{ extra_option.get_total_summary }} Лей</span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                     <tr>
+                        <td colspan="6" class="justify-content-center">
+                            <div class="pt-md-3">
+                                <div class="d-block d-md-flex flex-center-between">
+                                    <div class="mb-3 mb-md-0 w-xl-40">
+                                    </div>
+                                    <div class="d-md-flex">
+                                        <p>Всего: {{request|cart_total_summary}} Лей</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" class="border-top space-top-2 justify-content-center">
+                            <div class="pt-md-3">
+                                <div class="d-block d-md-flex flex-center-between">
+                                    <div class="mb-3 mb-md-0 w-xl-40">
+                                    </div>
+                                    <div class="d-md-flex">
+                                        <a href="{% url 'core:checkout' %}" class="btn text-white btn-primary-dark-w ml-md-2 px-5 px-md-4 px-lg-5 w-100 w-md-auto d-none d-md-inline-block">Заказать</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>

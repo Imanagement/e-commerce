@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load  static %}
+{% load cart_template_tags %}
+
+    {% block head_title %}{% if seo %}{{seo.page_title}}{% endif %}{% endblock head_title %}
+    {% block meta_description %}{% if seo %}{{seo.meta_description}}{% endif %}{% endblock meta_description %}
+ 
+
+    {% block content %}
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main id="content" role="main" class="cart-page">
+            <!-- breadcrumb -->
+            <div class="bg-gray-13 bg-md-transparent">
+                <div class="container">
+                    <!-- breadcrumb -->
+                    <div class="my-md-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-3 flex-nowrap flex-xl-wrap overflow-auto overflow-xl-visble">
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1"><a href="{% url 'core:home' %}">Главная</a></li>
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1 active" aria-current="page">Корзина</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <!-- End breadcrumb -->
+                </div>
+            </div>
+            <!-- End breadcrumb -->
+            <div class="container">
+                <div class="mb-4">
+                    <h1 class="text-center">Корзина</h1>
+                </div>
+                <div class="mb-10 cart-table">
+                    <form id="cart-products" class="mb-4" action="{% url 'core:update-cart' %}" method="post">
+                        {% csrf_token %}
+
+                        {% include 'common/cart_products_table.html' %}
+                    </form>
+                </div>
+                
+            </div>
+        </main>
+        <!-- ========== END MAIN CONTENT ========== -->
+    
+    
+        {% endblock content %}
+
+        {% block additional_scripts %}
+
+        <script>
+        
+            function cart_increase(button){
+                input = button.parentElement.parentElement.children[0].children[0].value++;
+            }
+            function cart_decrease(button){
+                if(button.parentElement.parentElement.children[0].children[0].value > 1){
+                    input = button.parentElement.parentElement.children[0].children[0].value--;
+                }
+
+            }
+        </script>
+
+        <script>
+
+            $(document).ready(function(e){
+                $('#cart-products').on('submit', function(e){
+                    event.preventDefault();
+                    $.post('{% url "core:update-cart" %}', $('#cart-products').serialize(),
+                    function(data){
+                        $('.table').html(data);
+                    })
+                })
+            })
+
+            function update_cart(){
+                $.post('{% url "core:update-cart" %}', $('#cart-products').serialize(),
+                function(data){
+                    $('.table').html(data);
+                })
+            }
+        </script>
+
+    {% endblock additional_scripts %}
+        

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load  static %}
+{% load get_url_tags %}
+
+    {% block head_title %}{% if seo %}{{seo.page_title}}{% endif %}{% endblock head_title %}
+    {% block meta_description %}{% if seo %}{{seo.meta_description}}{% endif %}{% endblock meta_description %}
+
+    {% block content %}
+    
+        <!-- ========== MAIN CONTENT ========== -->
+        <main id="content" role="main">
+            <!-- breadcrumb -->
+            <div class="bg-gray-13 bg-md-transparent">
+                <div class="container">
+                    <!-- breadcrumb -->
+                    <div class="my-md-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-3 flex-nowrap flex-xl-wrap overflow-auto overflow-xl-visble">
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1"><a href="{% url 'core:home' %}">Главная</a></li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <!-- End breadcrumb -->
+                </div>
+            </div>
+            <!-- End breadcrumb -->
+
+            <div class="container">
+                <div class="row mb-8">
+                 
+                    <div id="ajaxResult" class="offset-xl-1 col-xl-10 col-wd-9gdot5">
+                        {% include 'common/search_products_table.html' %}
+                    </div>
+                </div>
+            </div>
+        </main>
+        <!-- ========== END MAIN CONTENT ========== -->
+
+        {% endblock content %}
+
+        {% block additional_scripts %}
+            
+            <script id="searchScripts">
+                $(document).on('click', '.filter-input', function (e) {
+                    let flag = false;
+                    let url = window.location.href.split('?')[0];
+                    let url_parameter = window.location.search.substr(1).split('&');
+                    let data = $('select.filter-input').val();
+                    url = url + '?' + url_parameter[0] + '&order=' + data;
+                    window.location.href = url
+                })
+
+            </script>
+
+        {% endblock additional_scripts %}

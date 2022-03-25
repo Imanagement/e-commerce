@@ -1,0 +1,62 @@
+{% load i18n %}
+{% load cache %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  {% block head %}
+      <!-- Title -->
+      <title>{% block head_title %}{% endblock %}</title>
+      <!-- Required Meta Tags Always Come First -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="{% block meta_description %}{% endblock %}">
+      <!-- Favicon -->
+      <link rel="shortcut icon" href="{% static '/img/favicon.png' %}">
+      <!-- Google Fonts -->
+      <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&display=swap" rel="stylesheet">
+      <!-- CSS Implementing Plugins -->
+      <link rel="stylesheet" href="{% static 'css/theme.min.css' %}">
+  {% endblock head %}
+  {% block extra_styles %}{% endblock extra_styles %}
+  </head>
+<body>
+
+    {% if messages %}
+        {% for message in messages %}
+           <div class="alert alert-{{message.tags}}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% block header %}
+
+        {% include 'common/header.html' %}
+
+    {% endblock header %}
+
+    {% block content  %}
+    {% endblock content %}
+
+    {% block footer %}
+
+        {% include 'common/footer.html' %}
+
+    {% endblock footer %}
+
+    {% block extra_body %}
+    {% endblock %}
+
+    {% include 'common/go_to_top.html' %}
+
+    {% include 'common/scripts.html' %}
+
+    {% block additional_scripts %}
+    {% endblock additional_scripts %}
+
+    {% include 'common/call_us.html' %}
+    </body>
+</html>
+</body>
+</html>

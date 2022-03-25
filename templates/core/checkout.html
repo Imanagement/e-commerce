@@ -1,0 +1,559 @@
+{% extends 'base.html' %}
+{% load  static %}
+{% load crispy_forms_tags %}
+{% load math_tags %}
+{% load cart_template_tags %}
+
+    {% block head_title %}{% if seo %}{{seo.page_title}}{% endif %}{% endblock head_title %}
+    {% block meta_description %}{% if seo %}{{seo.meta_description}}{% endif %}{% endblock meta_description %}
+ 
+
+{% block extra_styles %}
+    <style>
+    
+        .irs-grid-pol, .irs-grid-pol.small {
+            display: none !important;
+        }
+        .irs-bar {
+            height: 10px;
+            background-color: #e50914;
+            border-radius: 10px;
+            top: -8.5px;
+
+        }
+
+        .irs-min, .irs-max {
+            display: none !important;
+        }
+        .irs-single {
+            font-size: 16px;
+            top: -30px !important;
+        }
+        .irs-grid {
+            top: 0;
+        }
+        .irs-grid-text {
+            font-size: 12px;
+        }
+        .irs-line {
+            left: 6px;
+            width: 98.5%;
+            top: -10px;
+            height: 12px;
+            background-color: white;
+            background: linear-gradient(to bottom, #ddd -50%, white 150%);
+            border: 1px solid #ccc;
+            border-radius: 12px;
+        }
+        .irs-slider {
+            width: 15px;
+            height: 15px;
+            background-color: #e50914;
+            border-radius: 50%;
+            top: -11px;
+        }
+    
+    </style>
+{% endblock extra_styles %}
+    {% block content %}
+
+        <!-- ========== MAIN CONTENT ========== -->
+        <main id="content" role="main" class="checkout-page">
+            <!-- breadcrumb -->
+            <div class="bg-gray-13 bg-md-transparent">
+                <div class="container">
+                    <!-- breadcrumb -->
+                    <div class="my-md-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-3 flex-nowrap flex-xl-wrap overflow-auto overflow-xl-visble">
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1"><a href="{% url 'core:home' %}">Главная</a></li>
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1 active" aria-current="page">Оформление заказа</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <!-- End breadcrumb -->
+                </div>
+            </div>
+            <!-- End breadcrumb -->
+ 
+            <div class="container">
+                <div class="mb-5">
+                    <h1 class="text-center">Оформление Заказа</h1>
+                </div>
+                {% if request.user.is_authenticated != True %}
+                <!-- Accordion -->
+                <div id="shopCartAccordion" class="accordion rounded mb-5">
+                    <!-- Card -->
+                    <div class="card border-0">
+                        <div id="shopCartHeadingOne" class="alert alert-primary mb-0 text-white" role="alert">
+                            Уже зарегистрированы? <a href="{% url 'account_login' %}" class="alert-link text-white">Нажмите, чтобы войти</a>
+                        </div>
+                        {% comment %} <div id="shopCartOne" class="collapse border border-top-0" aria-labelledby="shopCartHeadingOne" data-parent="#shopCartAccordion" >
+                            <!-- Form -->
+                            
+
+                            <form class="js-validate p-5">
+                                <!-- Title -->
+                                <div class="mb-5">
+                                    <p class="text-gray-90 mb-2">Добро пожаловать! Войдите в ваш аккаунт.</p>
+                                    <p class="text-gray-90">Если вы уже покупали у нас товары, пожалуйста, введите вашу информацию внизу. Если Вы у нас впервые, пожалуйста, перейдите к секции платежные реквизиты.</p>
+                                </div>
+                                <!-- End Title -->
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <!-- Form Group -->
+                                        <div class="js-form-message form-group">
+                                            <label class="form-label" for="signinSrEmailExample3">Email</label>
+                                            <input type="email" class="form-control" name="email" id="signinSrEmailExample3" placeholder="Email" aria-label="Email address" required
+                                            data-msg="Пожалуйста, введите корректный email"
+                                            data-error-class="u-has-error"
+                                            data-success-class="u-has-success">
+                                        </div>
+                                        <!-- End Form Group -->
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <!-- Form Group -->
+                                        <div class="js-form-message form-group">
+                                            <label class="form-label" for="signinSrPasswordExample2">Пароль</label>
+                                            <input type="password" class="form-control" name="password" id="signinSrPasswordExample2" placeholder="********" aria-label="********" required
+                                            data-msg="Your password is invalid. Please try again."
+                                            data-error-class="u-has-error"
+                                            data-success-class="u-has-success">
+                                        </div>
+                                        <!-- End Form Group -->
+                                    </div>
+                                </div>
+
+                                <!-- Checkbox -->
+                                <div class="js-form-message mb-3">
+                                    <div class="custom-control custom-checkbox d-flex align-items-center">
+                                        <input type="checkbox" class="custom-control-input" id="rememberCheckbox" name="rememberCheckbox" required
+                                        data-error-class="u-has-error"
+                                        data-success-class="u-has-success">
+                                        <label class="custom-control-label form-label" for="rememberCheckbox">
+                                            Запомнить меня
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- End Checkbox -->
+
+                                <!-- Button -->
+                                <div class="mb-1">
+                                    <div class="mb-3">
+                                        <button type="submit" class="btn btn-primary-dark-w px-5">Войти</button>
+                                    </div>
+                                    <div class="mb-2">
+                                        <a class="text-blue" href="#">Забыли пароль?</a>
+                                    </div>
+                                </div>
+                                <!-- End Button -->
+                            </form>
+                            <!-- End Form -->
+                        </div> {% endcomment %}
+                    </div>
+                    <!-- End Card -->
+                </div>
+                <!-- End Accordion -->
+                {% endif %}
+
+                <form method="POST" class="js-validate" novalidate="novalidate">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-lg-5 order-lg-2 mb-7 mb-lg-0">
+                            <div class="pl-lg-3 ">
+                                <div class="bg-gray-1 rounded-lg">
+                                    <!-- Order Summary -->
+                                    <div class="p-4 mb-4 checkout-table">
+                                        <!-- Title -->
+                                        <div class="border-bottom border-color-1 mb-5">
+                                            <h3 class="section-title mb-0 pb-2 font-size-25">Ваш заказ</h3>
+                                        </div>
+                                        <!-- End Title -->
+
+                                        <!-- Product Content -->
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th class="product-name">Товар</th>
+                                                    <th class="product-total">Стоимость</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for order_product in basket.products.all %}
+                                                    <tr class="cart_item">
+                                                        <td>{{ order_product.product.name }}<strong class="product-quantity"> × {{ order_product.quantity }}</strong></td>
+                                                        <td>
+                                                            {% if order_product.product.discount_price %}
+                                                                {{ order_product.product.discount_price|multiply:order_product.quantity}}
+                                                            {% else %}
+                                                                {{ order_product.product.price|multiply:order_product.quantity}}
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    {% if order_product.extraoptionordered_set.all %}
+                                                        <tr class="cart_item">
+                                                            <td><span>Дополнительные опции:</span></td>
+                                                            <td></td>
+                                                        </tr>
+                                                        <tr class="cart_item">
+                                                            {% for extra_option in order_product.extraoptionordered_set.all %}
+                                                                <td>{{ extra_option.name }} × {{ extra_option.count }}</td>
+                                                                <td>{{ extra_option.get_total_summary }}</td>
+                                                            {% endfor %}
+                                                        </tr>
+                                                    {% endif %}
+                                                {% endfor %}
+                                               
+                                            </tbody>
+                                            <tfoot>
+                                                <tr>
+                                                    <th>Всего</th>
+                                                    <td> {{ request|cart_total_summary }} Лей</td>
+                                                </tr>
+                                                
+                                            </tfoot>
+                                        </table>
+                                        <div class="border-top border-width-3 border-color-1 pt-3 mb-3">
+                                            <!-- Basics Accordion -->
+                                            <div id="basicsAccordion2">
+                                                
+
+                                                {% for delievery_option in delievery_options %}
+                                                    
+                                                    <!-- Card -->
+                                                    <div class="border-bottom border-color-1 border-dotted-bottom">
+                                                        <div class="p-3" id="basicsHeading{{ value }}">
+                                                            <div class="custom-control custom-radio">
+                                                                <input type="radio" class="delievery-input delievery-payment-group-input custom-control-input" value="{{ delievery_option.id }}" id="{{ delievery_option.slug }}" name="delievery">
+                                                                <label class="custom-control-label form-label collapsed delievery-label" for="{{ delievery_option.slug }}"
+                                                                    data-toggle="collapse"
+                                                                    data-target="#basicsCollapse{{ delievery_option.slug }}"
+                                                                    aria-expanded="true"
+                                                                    aria-controls="basicsCollapse{{ delievery_option.slug }}">
+                                                                    {{ delievery_option.name }}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div id="basicsCollapse{{ delievery_option.slug }}" class="collapse border-top border-color-1 border-dotted-top bg-dark-lighter"
+                                                            aria-labelledby="basicsHeading{{ delievery_option.slug }}"
+                                                            data-parent="#basicsAccordion2">
+                                                            <div class="p-4">
+                                                                {{ delievery_option.description }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- End Card -->
+                                                
+                                                {% endfor %}
+                                              
+                                            </div>
+                                            <!-- End Basics Accordion -->
+                                        </div>
+                                                <table class="table">
+
+                                                    <tr>
+                                                        <th style="border-top: none;">Доставка</th>
+                                                        <td style="border-top: none;" id="delieverySummary">0 Лей</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Всего с доставкой</th>
+                                                        <td><strong class="total-summary">{{request|cart_total_summary}} Лей</strong></td>
+                                                    </tr>
+
+                                                </table>
+                                                
+                                        <!-- End Product Content -->
+                                        <div class="border-top border-width-3 border-color-1 pt-3 mb-3">
+                                            <!-- Basics Accordion -->
+                                            <div id="basicsAccordion1">
+                                                
+
+                                                {% for payment_option in payment_options %}
+                                                    
+                                                    <!-- Card -->
+                                                    <div class="border-bottom border-color-1 border-dotted-bottom">
+                                                        <div class="p-3" id="basicsHeading{{ value }}">
+                                                            <div class="custom-control custom-radio">
+                                                                {{ form.payment }}
+                                                                <input type="radio" class="payment-input delievery-payment-group-input custom-control-input" value="{{ payment_option.slug }}" id="{{ payment_option.slug }}" name="payment">
+                                                                <label class="custom-control-label form-label collapsed payment-label" for="{{ payment_option.slug }}"
+                                                                    data-toggle="collapse"
+                                                                    data-target="#basicsCollapse{{ payment_option.slug }}"
+                                                                    aria-expanded="true"
+                                                                    aria-controls="basicsCollapse{{ valpayment_option.slugue }}">
+                                                                    {{ payment_option.name }}
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                        <div id="basicsCollapse{{ payment_option.slug }}" class="collapse border-top border-color-1 border-dotted-top bg-dark-lighter"
+                                                            aria-labelledby="basicsHeading{{ payment_option.slug }}"
+                                                            data-parent="#basicsAccordion1">
+                                                            <div class="p-4">
+                                                                {{ payment_option.description }}
+                                                                {% if payment_option.id == 2 %}
+                                                                        <div class="credit-range-slider ">
+                                                                            <h4 class="mt-3 mb-5">Выберите кол-во месяцев</h4>
+                                                                            <input id="creditRangeSlider" class="js-range-slider filter-range-input" type="nubmer" value="0" name='credit'
+                                                                            data-extra-classes="">
+                                                                            <p class="mt-5 text-dark"><span class="totalSummaryInMonth">0</span> лей в месяц</p>
+                                                                        </div>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- End Card -->
+                                                
+                                                {% endfor %}
+                                              
+                                            </div>
+                                            <!-- End Basics Accordion -->
+                                        </div>
+                                        <div class="form-group d-flex align-items-center justify-content-between px-3 mb-5">
+                                            <div class="form-check">
+
+                                                {{ form.terms_and_conditions }}
+           
+                                                <label class="form-check-label form-label" for="defaultCheck10">
+                                                    Я прочитал и согласен с <a href="#" class="text-blue">условиями соглашения </a>
+                                                    <span class="text-danger">*</span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary-dark-w text-white btn-block btn-pill font-size-20 mb-3 py-3">Сделать Заказ</button>
+                                    </div>
+                                    <!-- End Order Summary -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-7 order-lg-1">
+                            <div class="pb-7 mb-7">
+                                <!-- Title -->
+                                <div class="border-bottom border-color-1 mb-5">
+                                    <h3 class="section-title mb-0 pb-2 font-size-25">Платежные реквизиты</h3>
+                                </div>
+                                <!-- End Title -->
+
+                                <!-- Billing Form -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <!-- Input -->
+                                        <div class="js-form-message mb-6">
+                                            <label class="form-label">
+                                                Имя
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.customer_first_name }}
+                                        </div>
+                                        <!-- End Input -->
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <!-- Input -->
+                                        <div class="js-form-message mb-6">
+                                            <label class="form-label">
+                                                Фамилия
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.last_name }}
+                                        </div>
+                                        <!-- End Input -->
+                                    </div>
+
+                                    <div class="w-100"></div>
+
+                                    <div class="col-md-12">
+                                        <!-- Input -->
+                                        <div class="js-form-message mb-6">
+                                            <label class="form-label">
+                                                Адрес, улица
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.street_address }}
+                                        </div>
+                                        <!-- End Input -->
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <!-- Input -->
+                                        <div class="js-form-message mb-6">
+                                            <label class="form-label">
+                                                Город
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.city_address }}
+                                        </div>  
+                                        <!-- End Input -->
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <!-- Input -->
+                                        <div class="js-form-message mb-6">
+                                            <label class="form-label">
+                                                Почтовый индекс
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.postcode }}
+                                        </div>
+                                        <!-- End Input -->
+                                    </div>
+
+                                    <div class="w-100"></div>
+
+                                    <div class="col-md-6">
+                                        <!-- Input -->
+                                        <div class="js-form-message mb-6">
+                                            <label class="form-label">
+                                                Email
+                                                <span class="text-danger">*</span>
+                                            </label>
+                                            {{ form.email }}                                        
+                                        </div>
+                                        <!-- End Input -->
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <!-- Input -->
+                                        <div class="js-form-message mb-6">
+                                            <label class="form-label">
+                                                Номер телефона
+                                            </label>
+                                            {{ form.phone }}
+                                        </div>
+                                        <!-- End Input -->
+                                    </div>
+
+                                    <div class="w-100"></div>
+                                </div>
+                                <!-- End Billing Form -->
+                                {% if request.user.is_authenticated != True %}
+                                    <!-- Accordion -->
+                                    <div id="shopCartAccordion2" class="accordion rounded mb-6">
+                                        <!-- Card -->
+                                        <div class="card border-0">
+                                            <div id="shopCartHeadingThree" class="custom-control custom-checkbox d-flex align-items-center">
+                                                {{ form.create_an_account }}
+                                                <label class="custom-control-label form-label" for="createAnaccount" data-toggle="collapse" data-target="#shopCartThree" aria-expanded="false" aria-controls="shopCartThree">
+                                                    Создать аккаунт?
+                                                </label>
+                                            </div>
+                                            <div id="shopCartThree" class="collapse" aria-labelledby="shopCartHeadingThree" data-parent="#shopCartAccordion2">
+                                                <!-- Form Group -->
+                                                <div class="js-form-message form-group py-5">
+                                                    <label class="form-label" for="signinSrPasswordExample1">
+                                                        Придумайте пароль
+                                                        <span class="text-danger">*</span>
+                                                    </label>
+                                                    {{ form.sign_in_password }}
+                                                </div>
+                                                <!-- End Form Group -->
+                                            </div>
+                                        </div>
+                                        <!-- End Card -->
+                                    </div>
+                                    <!-- End Accordion -->
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                </form>
+            </div>
+        </main>
+        <!-- ========== END MAIN CONTENT ========== -->
+
+        {% endblock content %}
+
+        {% block additional_scripts %}
+        
+            <script>
+                
+                var custom_values = [6, 12, 18, 24];
+                var total_cart_summary = {{ request|cart_total_summary }};
+                $(document).ready(function(e){
+                    if(total_cart_summary < 2000 || total_cart_summary > 100000){
+                        $('input#rasschitat-v-kredit').prop('disabled', true);
+                        $('.credit-range-slider').html('<b>К сожалению, кредит на данную сумму недоступен</b>')
+                    }
+                })
+                $("#creditRangeSlider").ionRangeSlider({
+                    type: 'single',
+                    grid: true,
+                    skin: "flat",
+                    values: custom_values,
+                    onStart: function(data){
+                        data.from_value = 6;
+                        countCreditSummary(data);
+                    },
+                    onChange: function(data){
+                        countCreditSummary(data);
+                    },
+                });
+                
+                $('.delievery-label').on('click', function(e){
+
+                })
+                function countCreditSummary(data){
+                    if(total_cart_summary > 2000 && total_cart_summary < 100000){
+                        var r = 0.01,
+                            pv = total_cart_summary,
+                            com_percent = 0.0125,
+                            n = data.from_value,
+                            com_mdl = 0,
+                            result = 0;
+                            
+                        if(data.from_value !== 6){
+                            com_percent = 0.0155;
+                        }
+
+                        if(data.from_value === 6 || data.from_value === 24) {
+                            com_mdl = 25;
+                        }
+                        result = (((r * pv) / (1 - (1 + r) ** (-n))) + pv * com_percent + com_mdl)
+                        result = Math.round(result)
+                        $('.totalSummaryInMonth').html(result)
+                    }
+                }
+            </script>
+            <script>
+                $('input.delievery-payment-group-input').on('change', function (e)
+                {
+                    var delieveryForMoldova = {{ delievery_cost }};
+                    delieveryForMoldova = delieveryForMoldova || 0;
+                    var totalSummary = total_cart_summary;
+
+                    var $delieveryOptionMoldovaInput = $('input#dostavka-po-vsej-moldove');
+
+                    var $cardPaymentInput = $('input#oplata-kartoj');
+                    var $countInCreditInput = $('input#rasschitat-v-kredit');
+                    var $cashPaymentInput = $('input#oplata-nalichnymi');
+                    var $delieverySummaryOutput =  $('#delieverySummary');
+                    var $totalSummaryOutput = $('.total-summary');
+                    if ($delieveryOptionMoldovaInput.is(':checked'))
+                    {
+
+                        totalSummary = Math.ceil(totalSummary + delieveryForMoldova + (total_cart_summary / 100) * 2);
+                        $delieverySummaryOutput.text(delieveryForMoldova + ' Лей');
+                        $totalSummaryOutput.text(totalSummary + ' Лей');
+                        $cardPaymentInput.prop('disabled', true);
+                        $countInCreditInput.prop('disabled', true);
+                        $cashPaymentInput.prop('checked', true);
+
+                    }
+                    else
+                    {
+                        $delieverySummaryOutput.text('0 Лей');
+                        $totalSummaryOutput.text(total_cart_summary + ' Лей');
+                        $cardPaymentInput.prop('disabled', false);
+                        $countInCreditInput.prop('disabled', false);
+                    }
+                    if ($cardPaymentInput.is(':checked'))
+                    {
+                        totalSummary = Math.ceil(totalSummary + (total_cart_summary / 100) * 3);
+                        $totalSummaryOutput.text(totalSummary + ' Лей');
+                    }
+                })
+            </script>
+        {% endblock additional_scripts %}

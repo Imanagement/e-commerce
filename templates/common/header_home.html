@@ -1,0 +1,459 @@
+{% load static %}
+{% load cache %}
+{% load i18n %}
+{% load cart_template_tags %}
+<!-- ========== HEADER ========== -->
+        <header id="header" class="u-header u-header-left-aligned-nav">
+            <div class="bgc-black u-header__section">
+                <!-- Topbar -->
+                <div class="py-2 d-none d-xl-block">
+                    <div class="container">
+                        <div class="d-flex align-items-center">
+                            <div class="topbar-left">
+                                <a href="{% url 'core:home' %}" class="text-white font-size-13 hover-on-dark">{% trans "Добро пожаловать в <span class='text-white'>Store!</span></a> "%}
+                            </div>
+                            <div class="topbar-right ml-auto">
+                                <ul class="list-inline mb-0">
+                                    <li class="list-inline-item mr-0 u-header-topbar__nav-item u-header-topbar__nav-item-border">
+                                        <a href="{% url 'core:contacts' %}" class="text-white u-header-topbar__nav-link"><i class="ec ec-map-pointer mr-1"></i> Местонахождение офиса</a>
+                                    </li>
+                                    {% comment %} <li class="list-inline-item mr-0 u-header-topbar__nav-item u-header-topbar__nav-item-border u-header-topbar__nav-item-no-border u-header-topbar__nav-item-border-single">
+                                        <div class="d-flex align-items-center">
+                                            <!-- Language -->
+                                            <div class="position-relative">
+                                                <a id="languageDropdownInvoker" class="dropdown-nav-link dropdown-toggle d-flex align-items-center u-header-topbar__nav-link font-weight-normal" href="javascript:;" role="button"
+                                                    aria-controls="languageDropdown"
+                                                    aria-haspopup="true"
+                                                    aria-expanded="false"
+                                                    data-unfold-event="hover"
+                                                    data-unfold-target="#languageDropdown"
+                                                    data-unfold-type="css-animation"
+                                                    data-unfold-duration="300"
+                                                    data-unfold-delay="300"
+                                                    data-unfold-hide-on-scroll="true"
+                                                    data-unfold-animation-in="slideInUp"
+                                                    data-unfold-animation-out="fadeOut">
+                                                    <span class="d-inline-block d-sm-none">RU</span>
+                                                    <span class="d-none d-sm-inline-flex align-items-center"><i class="fas fa-language mr-1"></i>Русский</span>
+                                                </a>
+
+                                                <div id="languageDropdown" class="dropdown-menu dropdown-unfold" aria-labelledby="languageDropdownInvoker">
+                                                    <a class="dropdown-item active" href="#">Румынский</a>
+
+                                                </div>
+                                            </div>
+                                            <!-- End Language -->
+                                        </div>
+                                    </li> {% endcomment %}
+                                    <li class="list-inline-item mr-0 u-header-topbar__nav-item u-header-topbar__nav-item-border">
+                                        <!-- Account Sidebar Toggle Button -->
+                                        {% if request.user.is_authenticated %}
+                                            <nobr id="sidebarNavToggler" class="u-header-topbar__nav-link"
+                                                <i class="ec ec-user mr-1"></i> <a class="text-white" href="{% url 'account_logout' %}">Выход</a>
+                                            </nobr>
+                                        {% else %}
+                                            <nobr id="sidebarNavToggler" class="u-header-topbar__nav-link"
+                                                <i class="ec ec-user mr-1"></i> <a href="{% url 'account_signup' %}">Регистрация</a> <span class="text-gray-50">или </span> <a href="{% url 'account_login' %}">Вход</a>
+                                            </nobr>
+                                        {% endif %}
+                                        <!-- End Account Sidebar Toggle Button -->
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Topbar -->
+
+                <!-- Logo-Search-header-icons -->
+                <div class="py-2 py-xl-5 bg-primary-down-lg">
+                    <div class="container my-0dot5 my-xl-0">
+                        <div class="row align-items-center">
+                            <!-- Logo-offcanvas-menu -->
+                            <div class="col-auto">
+                                <!-- Nav -->
+                                <nav class="navbar navbar-expand u-header__navbar py-0 justify-content-xl-between max-width-270 min-width-270">
+                                    <!-- Logo -->
+                                    <a class="order-1 order-xl-0 navbar-brand u-header__navbar-brand u-header__navbar-brand-center" href="{% url 'core:home' %}" aria-label="Electro">
+                                        <picture>
+                                            <source media="(max-width: 1199px)" srcset="{% static '/img/logo-8.png' %}">
+                                            <img src="{% static '/img/logo-8.png' %}" alt="">
+                                        </picture>
+                                    </a>
+                                    <!-- End Logo -->
+                                    <button id="sidebarHeaderInvokerMenu" type="button" class="navbar-toggler d-block btn u-hamburger mr-3 mr-xl-0"
+                                        aria-controls="sidebarHeader"
+                                        aria-haspopup="true"
+                                        aria-expanded="false"
+                                        data-unfold-event="click"
+                                        data-unfold-hide-on-scroll="false"
+                                        data-unfold-target="#sidebarHeader1"
+                                        data-unfold-type="css-animation"
+                                        data-unfold-animation-in="fadeInLeft"
+                                        data-unfold-animation-out="fadeOutLeft"
+                                        data-unfold-duration="500">
+                                        <span id="hamburgerTriggerMenu" class="u-hamburger__box">
+                                            <span class="u-hamburger__inner"></span>
+                                        </span>
+                                    </button>
+                                </nav>
+                                <!-- End Nav -->
+
+                                <!-- ========== HEADER SIDEBAR ========== -->
+                                <aside id="sidebarHeader1" class="u-sidebar u-sidebar--left" aria-labelledby="sidebarHeaderInvoker">
+                                    <div class="u-sidebar__scroller">
+                                        <div class="u-sidebar__container">
+                                            <div class="u-header-sidebar__footer-offset">
+                                                <!-- Toggle Button -->
+                                                <div class="position-absolute top-0 right-0 z-index-2 pt-4 pr-4 bg-white">
+                                                    <button type="button" class="close ml-auto"
+                                                        aria-controls="sidebarHeader"
+                                                        aria-haspopup="true"
+                                                        aria-expanded="false"
+                                                        data-unfold-event="click"
+                                                        data-unfold-hide-on-scroll="false"
+                                                        data-unfold-target="#sidebarHeader1"
+                                                        data-unfold-type="css-animation"
+                                                        data-unfold-animation-in="fadeInLeft"
+                                                        data-unfold-animation-out="fadeOutLeft"
+                                                        data-unfold-duration="500">
+                                                        <span aria-hidden="true"><i class="ec ec-close-remove text-gray-90 font-size-20"></i></span>
+                                                    </button>
+                                                </div>
+                                                <!-- End Toggle Button -->
+                                                {% cache 1 mobile_menu %}
+                                                <!-- Content -->
+                                                <div class="js-scrollbar u-sidebar__body">
+                                                    <div id="headerSidebarContent" class="u-sidebar__content u-header-sidebar__content">
+                                                        <!-- Logo -->
+                                                        <a class="navbar-brand u-header__navbar-brand u-header__navbar-brand-center mb-3" href="{% url 'core:home' %}" aria-label="Electro">
+                                                            <picture>
+                                                                <img src="{% static '/img/logo-6.png' %}" alt="">
+                                                            </picture>
+                                                        </a>
+                                                        <!-- End Logo -->
+
+                                                        <!-- List -->
+                                                        <ul id="headerSidebarList" class="u-header-collapse__nav">
+                                                            {% for category in main_categories %}
+                                                                <li class="u-has-submenu u-header-collapse__submenu">
+                                                                    <a class="u-header-collapse__nav-link u-header-collapse__nav-pointer" href="javascript:;" data-target="#{{ category.slug }}" role="button" data-toggle="collapse" aria-expanded="false" aria-controls="headerSidebarComputersCollapse">
+                                                                        {{ category.name }}
+                                                                    </a>
+
+                                                                    <div id="{{ category.slug }}" class="collapse" data-parent="#headerSidebarContent">
+                                                                        <ul class="u-header-collapse__nav-list">
+                                                                            <li><a class="u-header-collapse__submenu-nav-link" href="{{ category.get_absolute_url }}"><span class="u-header-sidebar__sub-menu-title font-size-18">{{ category.name }}</span></a></li>
+                                                                            {% for category_child in category.get_children %}
+                                                                                <li class=""><a class="u-header-collapse__submenu-nav-link" href="{{ category_child.get_absolute_url }}"><span class="u-header-sidebar__sub-menu-title">{{ category_child.name }}</span></a></li>
+                                                                                {% if category_child.get_descendants %}
+                                                                                    {% for category_child in category_child.get_descendants %}
+                                                                                        <li class="header-menu-li-padding-{{ category_child.level }}"><a class="u-header-collapse__submenu-nav-link" href="{{ category_child.get_absolute_url }}">{{ category_child.name }}</a></li>
+                                                                                    {% endfor %}
+                                                                                {% endif %}
+                                                                            {% endfor %}
+                                                                            
+                                                                        </ul>
+                                                                    </div>
+                                                                </li>
+                                                            {% endfor %}
+                                                            
+                                                        </ul>
+                                                        <!-- End List -->
+
+                                                        <ul class="u-header-collapse__nav">
+                                                        
+                                                        <li class=""><a class="u-header-collapse__nav-link u-header-collapse__nav-pointer" href=" {% url 'core:compare' %} ">Сравнение</a></li>
+                                                        <li class=""><a class="u-header-collapse__nav-link u-header-collapse__nav-pointer" href=" {% url 'core:wishlist' %} ">Избранное</a></li>
+                                                        <li class=""><a class="u-header-collapse__nav-link u-header-collapse__nav-pointer" href=" {% url 'core:contacts' %} ">Связаться с нами</a></li>
+                                                        <li class=""><a class="u-header-collapse__nav-link u-header-collapse__nav-pointer" href=" {% url 'core:extra-information' %} ">Дополнительная информация</a></li>
+                                                        
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <!-- End Content -->
+                                                {% endcache %}
+
+                                            </div>
+                                            <!-- Footer -->
+                                            <footer id="SVGwaveWithDots" class="svg-preloader u-header-sidebar__footer">
+                                                <ul class="list-inline mb-0">
+                                                    <li class="list-inline-item pr-3">
+                                                        <a class="u-header-sidebar__footer-link text-gray-90" href="{% url 'core:extra-information' %}">Обмен и возврат</a>
+                                                    </li>
+                                                    <li class="list-inline-item pr-3">
+                                                        <a class="u-header-sidebar__footer-link text-gray-90" href="{% url 'core:extra-information' %}">Доставка и оплата</a>
+                                                    </li>
+                                                    {% comment %} <li class="list-inline-item">
+                                                        <a class="u-header-sidebar__footer-link text-gray-90" href="#">
+                                                            <i class="fas fa-info-circle"></i>
+                                                        </a>
+                                                    </li> {% endcomment %}
+                                                </ul>
+
+                                                <!-- SVG Background Shape -->
+                                                <div class="position-absolute right-0 bottom-0 left-0 z-index-n1">
+                                                    <img class="js-svg-injector" src="{% static '/svg/components/wave-bottom-with-dots.svg'%}" alt="Image Description"
+                                                    data-parent="#SVGwaveWithDots">
+                                                </div>
+                                                <!-- End SVG Background Shape -->
+                                            </footer>
+                                            <!-- End Footer -->
+                                        </div>
+                                    </div>
+                                </aside>
+                                <!-- ========== END HEADER SIDEBAR ========== -->
+                            </div>
+                            <!-- End Logo-offcanvas-menu -->
+                            <!-- Search Bar -->
+                            <div class="col d-none d-xl-block">
+                                <form action="{% url 'core:search-product' %}" method="GET" class="js-focus-state">
+                                    <label class="sr-only" for="searchproduct">Поиск</label>
+                                    <div class="input-group">
+                                        <input type="text" class="bgc-black border-white form-control py-2 pl-5 font-size-15 border-right-0 height-40 border-width-2 rounded-left-pill border-primary" name="product" id="searchproduct-item" aria-label="Найти товар" aria-describedby="searchProduct1" required>
+                                        <div class="input-group-append">
+                                            <!-- Select -->
+                                            <!-- End Select -->
+                                            <button class="btn btn-transparent height-40 py-2 px-3 rounded-right-pill" type="submit" id="searchProduct1">
+                                                <span class="ec ec-search font-size-24"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- End Search Bar -->
+                            <!-- Header Icons -->
+                            <div class="col col-xl-auto text-right text-xl-left pl-0 pl-xl-3 position-static">
+                                <div class="d-inline-flex">
+                                    <ul class="d-flex list-unstyled mb-0 align-items-center">
+                                        <!-- Search -->
+                                        <li class="col d-xl-none px-2 px-sm-3 position-static">
+                                            <a id="searchClassicInvoker" class="font-size-22 text-gray-90 text-lh-1 btn-text-secondary" href="javascript:;" role="button"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                title="Search"
+                                                aria-controls="searchClassic"
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                data-unfold-target="#searchClassic"
+                                                data-unfold-type="css-animation"
+                                                data-unfold-duration="300"
+                                                data-unfold-delay="300"
+                                                data-unfold-hide-on-scroll="true"
+                                                data-unfold-animation-in="slideInUp"
+                                                data-unfold-animation-out="fadeOut">
+                                                <span class="ec ec-search"></span>
+                                            </a>
+
+                                            <!-- Input -->
+                                            <div id="searchClassic" class="dropdown-menu dropdown-unfold dropdown-menu-right left-0 mx-2" aria-labelledby="searchClassicInvoker">
+                                                <form class="js-focus-state input-group px-3">
+                                                    <input class="form-control" type="search" placeholder="Search Product">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-primary px-3" name='product' type="submit"><i class="font-size-18 ec ec-search"></i></button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <!-- End Input -->
+                                        </li>
+                                        <!-- End Search -->
+                                        <li class="col d-none d-xl-block"><a href="{% url 'core:compare' %}" class="text-gray-90" data-toggle="tooltip" data-placement="top" title="Сравнение"><img class="header-icon" src="{% static '/img/icon-white/02.svg' %}" alt=""></a></li>
+                                        <li class="col d-none d-xl-block"><a href="{% url 'core:wishlist' %}" class="text-gray-90" data-toggle="tooltip" data-placement="top" title="Избранное"><img class="header-icon" src="{% static '/img/icon-white/03.svg' %}" alt=""></a></li>
+                                        <li class="col pr-xl-0 px-2 px-sm-3 d-xl-none">
+                                            <a href="{% url 'core:order-summary' %}" class="text-gray-90 position-relative d-flex " data-toggle="tooltip" data-placement="top" title="Корзина">
+                                                <img class="header-icon" src="{% static '/img/icon-white/04.svg' %}" alt="">
+                                                <span class="bg-lg-down-black width-22 height-22 bg-primary position-absolute d-flex align-items-center justify-content-center rounded-circle left-12 top-8 font-weight-bold font-size-12">
+                                                        {{request|cart_product_count}}
+                                                    </span>
+                                                <span class="d-none text-white d-xl-block font-weight-bold font-size-16 text-gray-90 ml-3">{{request|cart_total_summary}} Лей</span>
+                                            </a>
+                                        </li>
+                                        <li class="col pr-xl-0 px-2 px-sm-3 d-none d-xl-block">
+                                            <div id="basicDropdownHoverInvoker" class="text-gray-90 position-relative d-flex " data-toggle="tooltip" data-placement="top" title="Корзина"
+                                                aria-controls="basicDropdownHover"
+                                                aria-haspopup="true"
+                                                aria-expanded="false"
+                                                data-unfold-event="click"
+                                                data-unfold-target="#basicDropdownHover"
+                                                data-unfold-type="css-animation"
+                                                data-unfold-duration="300"
+                                                data-unfold-delay="300"
+                                                data-unfold-hide-on-scroll="true"
+                                                data-unfold-animation-in="slideInUp"
+                                                data-unfold-animation-out="fadeOut">
+                                                <img class="header-icon" src="{% static '/img/icon-white/04.svg' %}" alt="">
+                                                    <span class="bg-lg-down-black text-white width-22 height-22 bg-primary position-absolute d-flex align-items-center justify-content-center rounded-circle left-12 top-8 font-weight-bold font-size-12">
+                                                        {{request|cart_product_count}}
+                                                    </span>
+                                                
+                                            </div>
+                                            <div id="basicDropdownHover" class="cart-dropdown dropdown-menu dropdown-unfold border-top border-top-primary mt-3 border-width-2 border-left-0 border-right-0 border-bottom-0 left-auto right-0" aria-labelledby="basicDropdownHoverInvoker">
+                                                <ul class="list-unstyled px-3 pt-3">
+                                                    {% for order_product in order_products %}
+                                                    
+                                                    <li class="border-bottom pb-3 mb-3">
+                                                        <div class="">
+                                                            <ul class="list-unstyled row mx-n2">
+                                                                <li class="px-2 col-auto">
+                                                                    <img style='width:75px !important; height:75px;'class="img-fluid" src="{{order_product.product.main_image.url}}" alt="Image Description">
+                                                                </li>
+                                                                <li class="px-2 col">
+                                                                    <h5 class="text-blue font-size-14 font-weight-bold">{{order_product.product.name}}</h5>
+                                                                    <span class="font-size-14">{{order_product.quantity}} × {% if order_product.product.discount_price %}{{order_product.product.discount_price}} Лей
+                                                                    {% else %}{{order_product.product.price}} Лей{% endif %}</span>
+                                                                    {% for extra_option in order_product.extraoptionordered_set.all %}<p class="m-0 font-size-12">{{ extra_option.name }} {{ extra_option.count }} × {{ extra_option.cost }} Лей</p>{% endfor %}
+                                                                </li>
+                                                                <li class="px-2 col-auto">
+                                                                    <a href="{{order_product.product.get_remove_from_cart_url}}" class="text-gray-90"><i class="ec ec-close-remove"></i></a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </li>
+                                                    
+                                                    {% endfor %}
+                                                </ul>
+                                                <div class="flex-center-between px-4 pt-2">
+                                                    <a href="{% url 'core:order-summary' %}" class="btn btn-soft-secondary mb-3 mb-md-0 font-weight-normal px-5 px-md-4 px-lg-5">В корзину</a>
+                                                    <a href="{% url 'core:checkout' %}" class="btn btn-primary-dark-w ml-md-2 px-5 px-md-4 px-lg-5">Заказать</a>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- End Header Icons -->
+                        </div>
+                    </div>
+                </div>
+                <!-- End Logo-Search-header-icons -->
+
+                <!-- Vertical-and-secondary-menu -->
+                <div class="d-none d-xl-block container">
+                    <div class="row">
+                        <!-- Vertical Menu -->
+                        <div class="col-md-auto d-none d-xl-block">
+                            <div class="max-width-270 min-width-270">
+                                <!-- Basics Accordion -->
+                                <div id="basicsAccordion">
+                                    <!-- Card -->
+                                    <div class="card border-0">
+                                        <div class="bgc-black card-header card-collapse border-0" id="basicsHeadingOne">
+                                            <button type="button" id='navbar_expander'class="gradient gradient-border btn-link btn-remove-focus btn-block d-flex card-btn py-3 text-lh-1 px-4 shadow-none btn-primary rounded-top-lg border-0 font-weight-bold text-gray-90"
+                                                data-toggle="collapse"
+                                                data-target="#basicsCollapseOne"
+                                                aria-expanded="true"
+                                                aria-controls="basicsCollapseOne">
+                                                <span class="ml-0 text-white mr-2">
+                                                    <span class="fa fa-list-ul"></span>
+                                                </span>
+                                                <span class="pl-1 text-white">Все категории</span>
+                                            </button>
+                                        </div>
+                                        {% cache 86400 vertical_menu %}
+                                        <div id="basicsCollapseOne" class="collapse show vertical-menu"
+                                            aria-labelledby="basicsHeadingOne"
+                                            data-parent="#basicsAccordion">
+                                            <div class="card-body p-0">
+                                                <nav class="js-mega-menu navbar navbar-expand-xl u-header__navbar u-header__navbar--no-space hs-menu-initialized">
+                                                    <div id="navBar" class="collapse navbar-collapse u-header__navbar-collapse">
+                                                        <ul class="navbar-nav u-header__navbar-nav">
+                                                        {% for main_category in main_categories %}
+                                                            <!-- Nav Item MegaMenu -->
+                                                            <li class="nav-item hs-has-mega-menu u-header__nav-item"
+                                                                data-event="hover"
+                                                                data-animation-in="slideInUp"
+                                                                data-animation-out="fadeOut"
+                                                                data-position="left">
+                                                                <a id="basicMegaMenu" class="nav-link u-header__nav-link u-header__nav-link-toggle" href="{{ main_category.get_absolute_url }}" aria-haspopup="true" aria-expanded="false">{{ main_category.name }}</a>
+
+                                                                <!-- Nav Item - Mega Menu -->
+                                                                <div class="hs-mega-menu vmm-tfw u-header__sub-menu" aria-labelledby="basicMegaMenu">
+                                                                    <div class="row u-header__mega-menu-wrapper"    >
+                                                                        <div class="col-4 mb-3 mb-sm-0 menu-categories-list">
+                                                                            {% for category in main_category.get_children %}
+
+                                                                                <span class="u-header__sub-menu-title"><a class="u-header__sub-menu-title u-header__sub-menu-title-link" href="{{ category.get_absolute_url }}">{{ category.name }}</a></span>
+                                                                                <ul class="u-header__sub-menu-nav-group mb-3">
+                                                                                {% for last_category in category.get_children %}
+                                                                                    <li><a class="nav-link u-header__sub-menu-nav-link" href="{{ last_category.get_absolute_url }}">{{ last_category.name }}</a></li>
+                                                                                {% endfor %}
+                                                                                {% if category.show_brands_in_the_menu %}
+                                                                                    {% for brand in category.brand_set.all %}
+                                                                                        <li><a class="nav-link u-header__sub-menu-nav-link" href="{{ category.get_absolute_url }}?{{brand.name}}=on">{{ brand.name }}</a></li>
+                                                                                    {% endfor %}
+                                                                                {% endif %}
+                                                                                    {% for additional_category in category.category_set.all %}
+                                                                                        <li><a class="nav-link u-header__sub-menu-nav-link" href="{{ additional_category.get_absolute_url }}?{{aditional_category.name}}=on">{{ additional_category.name }}</a></li>
+                                                                                    {% endfor %}
+                                                                            
+                                                                                    
+                                                                                </ul>
+
+                                                                            {% endfor %}
+                                                                        </div>
+
+                                                                       
+                                                                        
+                                                                        <div class="col-8 mb-3 mb-sm-0 menu-categories-wrapper">
+                                                                                <ul class="u-header__sub-menu-nav-group categories-list" style='display: -ms-flexbox;display: flex;-ms-flex-wrap: wrap;flex-wrap: wrap;margin-right: -15px;margin-left: -15px;'>
+                                                                                {% for category in main_category.get_children %}
+                                                                                <li class='col-3' style='dispay:inline-block;'><a class="nav-link u-header__sub-menu-nav-link" href="{{ category.get_absolute_url }}"><img src="{{ category.image.url }}" alt=""></a>{{ category.name }}</li>
+                                                                                {% endfor %}
+                                                                                </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- End Nav Item - Mega Menu -->
+                                                            </li>
+                                                            <!-- End Nav Item MegaMenu-->
+                                                        {% endfor %}
+                                                            
+                                                            
+                                                        </ul>
+                                                    </div>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                        {% endcache %}
+
+                                    </div>
+                                    <!-- End Card -->
+                                </div>
+                                <!-- End Basics Accordion -->
+                            </div>
+                        </div>
+                        <!-- End Vertical Menu -->
+                        <!-- Secondary Menu -->
+                        <div class="col">
+                            <!-- Nav -->
+                            <nav class="js-mega-menu navbar navbar-expand-md u-header__navbar u-header__navbar--no-space">
+                                <!-- Navigation -->
+                                <div id="navBar" class="collapse navbar-collapse u-header__navbar-collapse">
+                                    <ul class="navbar-nav u-header__navbar-nav">
+
+                                        <li class="nav-item u-header__nav-item">
+                                            <a class="text-white nav-link u-header__nav-link" href="#" aria-haspopup="true" aria-expanded="false">Рассчитать в кредит</a>
+                                        </li>
+
+                                        <li class="nav-item u-header__nav-item">
+                                            <a class="text-white nav-link u-header__nav-link" href="{% url 'core:contacts' %}" aria-haspopup="true" aria-expanded="false">Связаться с нами</a>
+                                        </li>
+
+                                        <!-- Button -->
+                                        <li class="nav-item u-header__nav-last-item">
+                                            <a class="text-white nav-link u-header__nav-link font-size-18" href="tel:+37369250008" target="_blank">+373 692 500 08</a>
+                                        </li>
+                                        <!-- End Button -->
+                                    </ul>
+                                </div>
+                                <!-- End Navigation -->
+                            </nav>
+                            <!-- End Nav -->
+                        </div>
+                        <!-- End Secondary Menu -->
+                    </div>
+                </div>
+                <!-- End Vertical-and-secondary-menu -->
+            </div>
+        </header>
+        <!-- ========== END HEADER ========== -->

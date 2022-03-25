@@ -1,0 +1,79 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+{% load account socialaccount %}
+{% load crispy_forms_tags %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock %}
+
+{% block content %}
+ <main id="content" role="main">
+            <!-- breadcrumb -->
+            <div class="bg-gray-13 bg-md-transparent">
+                <div class="container">
+                    <!-- breadcrumb -->
+                    <div class="my-md-3">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb mb-3 flex-nowrap flex-xl-wrap overflow-auto overflow-xl-visble">
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1"><a href="{% url 'core:home' %}">Главная</a></li>
+                                <li class="breadcrumb-item flex-shrink-0 flex-xl-shrink-1 active" aria-current="page">Мой аккаунт</li>
+                            </ol>
+                        </nav>
+                    </div>
+                    <!-- End breadcrumb -->
+                </div>
+            </div>
+            <!-- End breadcrumb -->
+            <div class="container">
+                <div class="mb-4">
+                    <h1 class="text-center">Мой аккаунт</h1>
+                </div>
+                <div class="my-4 my-xl-8">
+                    <div class="row">
+                        <div class="col-md-5 offset-md-4 mr-md-auto mr-xl-0 mb-8 mb-md-0">
+                            <!-- Title -->
+                            <div class="border-bottom border-color-1 mb-6">
+                                <h3 class="d-inline-block section-title mb-0 pb-2 font-size-26">{% trans "Sign In" %}</h3>
+                            </div>
+                            <p class="text-gray-90 mb-4">С возращением! {% trans "Sign In" %} в ваш аккаунт</p>
+                            <!-- End Title -->
+                            {% get_providers as socialaccount_providers %}
+
+                                {% if socialaccount_providers %}
+                                
+                                    <p>{% blocktrans with site.name as site_name %}Please sign in with one
+                                    of your existing third party accounts. Or, <a href="{{ signup_url }}">sign up</a>
+                                    for a {{ site_name }} account and sign in below:{% endblocktrans %}</p>
+                                    {% include "socialaccount/snippets/login_extra.html" %}
+                                
+                                {% else %}
+                                
+                                    <p>{% blocktrans %}Если вы еще не создали свой аккаунт, тогда ,пожалуйста,
+                                    <a href="{{ signup_url }}">зарегистрируйтесь</a> вначале.{% endblocktrans %}</p>
+
+                                {% endif %}
+
+                                    <form class="login" method="POST" action="{% url 'account_login' %}">
+                                        {% csrf_token %}
+                                        {{ form|crispy }}
+                                        {% if redirect_field_value %}
+                                            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                                        {% endif %}
+                                        <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                                        <button class="btn btn-primary-dark-w px-5 primaryAction" type="submit">{% trans "Sign In" %}</button>
+                                    </form>
+
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <!-- ========== MAIN CONTENT ========== -->
+        </main>
+
+    {% endblock %}
+
+
+
+
+      
